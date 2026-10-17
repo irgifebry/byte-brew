@@ -4,9 +4,9 @@
 
 Website untuk kedai kopi spesialti **Bytebrew** di Senopati, Jakarta Selatan.
 
-Tampilan sekarang: **kertas krem hangat + blok espresso gelap**, tipografi
-**serif display (Fraunces) + sans (Manrope)**. Tidak ada monospace, tidak ada
-numerasi seksi, tidak ada metafora kode.
+Tampilan sekarang: **kertas krem hangat + blok espresso gelap**, satu keluarga
+tipografi **Outfit** (geometric sans, variable 100–900) untuk display dan body.
+Tidak ada monospace, tidak ada numerasi seksi, tidak ada metafora kode.
 
 Rancangan awal masih ada di [`PLAN.md`](./PLAN.md).
 
@@ -46,7 +46,7 @@ Butuh **Node 18+** (dibangun & dites di Node 26).
 ```
 src/
 ├── app/
-│   ├── layout.jsx          # fonts (Fraunces + Manrope), metadata, Navbar + Footer
+│   ├── layout.jsx          # fonts (Outfit), metadata, Navbar + Footer
 │   ├── globals.css         # design tokens, tombol, card, marquee, reveal
 │   ├── page.jsx            # HOME
 │   ├── menu/page.jsx

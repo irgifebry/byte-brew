@@ -3,7 +3,8 @@
 /* ============================================================
    BYTEBREW — Design Tokens
    Kertas kream hangat, teks espresso, aksen terracotta.
-  akura: serif display + sans body. Tanpa monospace.
+   Tipografi: Outfit (geometric sans) untuk display + body.
+   Tanpa monospace.
    ============================================================ */
 
 @theme {
@@ -44,9 +45,12 @@
   --color-line: #ddd1bd;
   --color-line-dk: #443529;
 
-  /* --- Font --- */
-  --font-display: var(--font-instrument-serif);
-  --font-sans: var(--font-instrument-sans);
+  /* --- Font ---
+     Satu keluarga (Outfit) dipakai untuk display dan body. Kedua token
+     tetap dipertahankan supaya semua pemakai `font-display` / `font-sans`
+     dan utility `display` / `eyebrow` tidak perlu diubah. */
+  --font-display: var(--font-outfit);
+  --font-sans: var(--font-outfit);
 
   /* --- Motion --- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -139,12 +143,29 @@ body {
    Typography utilities
    ============================================================ */
 
+/* Judul display. Sebelumnya utility ini membedakannya dari body lewat
+   bentuk huruf (serif vs sans); sekarang keduanya Outfit, jadi pembeda
+   hanya dibentuk dari weight + tracking.
+
+   `font-variation-settings: "SOFT" 20, "WONK" 1` yang dulu ada di sini
+   sudah dihapus. Kedua sumbu itu milik Instrument Serif; Outfit hanya
+   punya `wght`. Sumbu yang tidak dikenal diabaikan browser, jadi
+   deklarasi itu tidak merusak apa pun — hanya kode mati yang menyesatkan
+   pembaca. (Tidak menyentuh sumbu `wght`, jadi tidak menimpa
+   `font-weight` di bawah.)
+
+   Dua angka di bawah disesuaikan untuk Outfit. Hurufnya bulat dan
+   geometris dengan ascender tinggi serta x-height besar — pada ukuran
+   yang sama di butuh ruang vertikal lebih longgar daripada serif, jadi
+   `line-height` 1.02 dinaikkan ke 1.06. Sebaliknya, lebar hurufnya
+   lebih besar, sehingga `letter-spacing` -0.02em (nilai untuk serif)
+   disedikitkan ke -0.015em supaya display kecil (text-lg, text-2xl) tidak
+   terasa sempit. */
 @utility display {
   font-family: var(--font-display);
   font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  font-variation-settings: "SOFT" 20, "WONK" 1;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
 }
 
 /* Label kecil di atas judul. Sans, bukan mono. */

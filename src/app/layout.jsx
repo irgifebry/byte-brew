@@ -1,25 +1,40 @@
-import { Instrument_Serif, Instrument_Sans } from "next/font/google";
+import { Outfit } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IntroScreen from "@/components/IntroScreen";
 import "./globals.css";
 
-// Instrument Serif = serif display. Karakternya modern, tajam, dan
-// elegan — serif kontemporer yang sedang tren, bukan serif kaku ala corporate.
-const instrumentSerif = Instrument_Serif({
+// Outfit = geometric sans (golongan Futura/Montserrat), variable 100–900.
+// Satu keluarga untuk display dan body; karena bentuk hurufnya sama,
+// hierarki pindah ke weight + tracking, bukan ke perbedaan keluarga
+// huruf (lihat utility `.display` di globals.css).
+//
+// `weight: "variable"` menarik satu file variable yang mencakup 100-900.
+// Hanya sumbu `wght` yang dipakai, jadi `axes` tidak perlu diisi. (Rentang
+// "100 900" yang disebut di docs ditolak loader versi ini.)
+//
+// PENTING: Outfit tidak punya gaya italic di Google Fonts. Kalau
+// `style: ["normal", "italic"]` ikut dibawa, `next/font` gagal saat build
+// dengan "Failed to fetch font Outfit". Teks aksen tidak boleh memakai
+// `italic` — pakai `not-italic` kalau perlu.
+//
+// Class `outfit.variable` HARUS dipasang di <html>, bukan di <body>.
+// Token `--font-display` / `--font-sans` di globals.css ditulis di
+// `@theme`, yang Tailwind keluarkan sebagai `:root, :host`. Kalau variabel
+// ``--font-outfit` hanya ada di <body>, maka di <html> referensi
+// `var(--font-outfit)` tidak punya target → nilainya jadi
+// guaranteed-invalid. Custom property yang invalid itu ikut terwarisi ke
+// <body>, sehingga `font-family: var(--font-sans)` juga invalid-at-
+// computed-value-time → `unset` → mewarisi <html>, yaitu stack sistem
+// bawaan Tailwind. Hasilnya font web tidak pernah terpakai sama sekali.
+//
+// Catatan: cacat yang sama sudah ada saat seri Instrument — class-nya ada
+// di <body>, jadi situsnya diam-diam memakai font sistem, bukan Instrument.
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-  fallback: [],
-  adjustFontFallback: false,
-});
-
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-instrument-sans",
-  display: "swap",
+  weight: "variable",
+  variable: "--font-outfit",
+  display: "block",
   fallback: [],
   adjustFontFallback: false,
 });
@@ -56,7 +71,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" className={outfit.variable} suppressHydrationWarning>
       <head>
         {/*
           Set flag `js` SEBELUM paint pertama.
@@ -97,9 +112,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body
-        className={`${instrumentSerif.variable} ${instrumentSans.variable} antialiased`}
-      >
+      <body className="antialiased">
         <IntroScreen />
         <Navbar />
         <main>{children}</main>

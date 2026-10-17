@@ -3,7 +3,7 @@
 import { formatPrice } from "@/data/menu";
 
 /**
- * Kartu produk. Foto besar di atas, nama serif, tasting notes,
+ * Kartu produk. Foto besar di atas, nama produk (`.display`), tasting notes,
  * dan harga. Tidak ada nomor urut — itu terbaca seperti katalog teknis.
  */
 export default function MenuCard({ item, onSelect, className = "" }) {

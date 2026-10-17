@@ -2,7 +2,7 @@
   "name": "byte-brew",
   "version": "1.0.0",
   "private": true,
-  "description": "Bytebrew — website kedai kopi spesialti. Visual kertas krem hangat + blok espresso, tipografi serif.",
+  "description": "Bytebrew — website kedai kopi spesialti. Visual kertas krem hangat + blok espresso, tipografi Outfit.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
