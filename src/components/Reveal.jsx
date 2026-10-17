@@ -27,38 +27,41 @@ export default function Reveal({
     const el = ref.current;
     if (!el) return;
 
-    // Reduced motion → langsung tampil
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
+    if (el.parentElement?.closest("[data-reveal]")) {
+      el.setAttribute("data-reveal-nested", "");
       setVisible(true);
       return;
     }
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
-    );
+    let obs;
+    let failsafe;
+    const observe = () => {
+      if (obs) return;
+      obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setVisible(true);
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+      );
+      obs.observe(el);
+      failsafe = window.setTimeout(() => {
+        setVisible(true);
+        obs.disconnect();
+      }, 2500);
+    };
 
-    obs.observe(el);
-
-    // Safety net: kalau observer tidak pernah trigger (mis. container
-    // punya transform / overflow aneh), tampilkan setelah 2.5 detik
-    // supaya konten tidak pernah hilang permanen.
-    const failsafe = setTimeout(() => {
-      setVisible(true);
-      obs.disconnect();
-    }, 2500);
+    if (document.documentElement.classList.contains("intro-done")) observe();
+    else window.addEventListener("intro:done", observe, { once: true });
 
     return () => {
-      clearTimeout(failsafe);
-      obs.disconnect();
+      window.removeEventListener("intro:done", observe);
+      window.clearTimeout(failsafe);
+      obs?.disconnect();
     };
   }, []);
 

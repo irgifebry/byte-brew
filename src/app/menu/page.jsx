@@ -2,19 +2,18 @@
 
 import { useMemo, useState } from "react";
 import MenuCard from "@/components/MenuCard";
-import RetroDialog from "@/components/RetroDialog";
+import OrderDialog from "@/components/OrderDialog";
 import Reveal from "@/components/Reveal";
 import { CATEGORIES, ITEMS, formatPrice } from "@/data/menu";
 
-const TABS = [{ id: "all", label: "Semua", index: "00" }, ...CATEGORIES.map((c) => ({
+const TABS = [{ id: "all", label: "Semua" }, ...CATEGORIES.map((c) => ({
   id: c.id,
   label: c.label,
-  index: c.index,
 }))];
 
 export default function MenuPage() {
   const [tab, setTab] = useState("all");
-  const [dialog, setDialog] = useState(null);
+  const [selected, setSelected] = useState(null);
 
   const shown = useMemo(
     () => (tab === "all" ? ITEMS : ITEMS.filter((i) => i.category === tab)),
@@ -27,63 +26,55 @@ export default function MenuPage() {
   return (
     <>
       {/* --- Page header --- */}
-      <section className="grain relative overflow-hidden border-b border-line pt-32 pb-16 md:pt-44 md:pb-20">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src="/still-tamping.jpg"
-            alt=""
-            className="h-full w-full object-cover opacity-25"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/90 to-void" />
-        </div>
+      <section className="relative overflow-hidden border-b border-line bg-paper-2 pt-32 pb-14 md:pt-44 md:pb-20">
+        <div className="paper-tooth absolute inset-0 opacity-60" />
 
-        <div className="mx-auto max-w-[1400px] px-5 md:px-8">
-          <p className="eyebrow flex items-center gap-3 text-lime">
-            <span className="inline-block h-1.5 w-1.5 bg-lime" />
-            [02] — Katalog
+        <div className="relative mx-auto max-w-[1240px] px-5 md:px-8">
+          <p className="eyebrow flex items-center gap-3 text-amber-dp">
+            <span className="inline-block h-px w-8 bg-amber" />
+            Daftar menu
           </p>
-          <h1 className="display mt-5 text-[clamp(2.5rem,9vw,7.5rem)]">
-            DAFTAR MENU<span className="cursor-block" />
+          <h1 className="display mt-5 text-[clamp(2.5rem,8vw,6rem)] text-ink">
+            Pilih minuman yang Anda sukai.
           </h1>
-          <p className="mt-6 max-w-md text-sm leading-relaxed text-cream/60">
-            {ITEMS.length} varian tersedia. Harga dalam ribuan rupiah,
-            sudah termasuk pajak. Stok habis biasanya sekitar jam 15:00.
+          <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-ink-2">
+            Tersedia {ITEMS.length} pilihan menu, dengan harga mulai dari{" "}
+            {formatPrice(cheapest)}. Jenis biji dapat berubah sesuai stok.
+            Tanyakan kepada barista untuk mengetahui pilihan yang tersedia.
           </p>
         </div>
       </section>
 
       {/* --- Tabs --- */}
-      <div className="sticky top-[65px] z-30 border-b border-line bg-void/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1400px] gap-1 overflow-x-auto px-5 py-3 md:px-8">
+      <div className="sticky top-[65px] z-30 border-b border-line bg-paper/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1240px] items-center gap-2 overflow-x-auto px-5 py-3 md:px-8">
           {TABS.map((t) => (
             <button
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
-              className={`shrink-0 border px-4 py-2 font-mono text-[11px] font-bold tracking-wider uppercase transition-colors ${
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 tab === t.id
-                  ? "border-lime bg-lime text-void"
-                  : "border-line text-mute hover:border-lime hover:text-lime"
+                  ? "bg-espresso text-cream"
+                  : "bg-card text-ink-2 hover:text-ink"
               }`}
             >
-              <span className="mr-1.5 opacity-60">{t.index}</span>
               {t.label}
             </button>
           ))}
 
-          <span className="ml-auto hidden shrink-0 items-center pl-4 font-mono text-[11px] text-mute md:flex">
-            {shown.length} menu — mulai {formatPrice(cheapest)}
+          <span className="ml-auto hidden shrink-0 items-center pl-4 text-xs text-ink-2 md:flex">
+            {shown.length} menu · mulai {formatPrice(cheapest)}
           </span>
         </div>
       </div>
 
       {/* --- Grid --- */}
-      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-8 md:py-20">
+      <div className="mx-auto max-w-[1240px] px-5 py-16 md:px-8 md:py-20">
         {activeCat && (
           <Reveal from="up">
-            <p className="mb-10 max-w-lg border-l-2 border-lime pl-4 font-mono text-xs leading-relaxed text-mute">
-              <span className="text-lime">{activeCat.note}</span>
+            <p className="mb-10 max-w-lg text-[0.95rem] leading-relaxed text-ink-2">
+              {activeCat.note}
             </p>
           </Reveal>
         )}
@@ -93,47 +84,42 @@ export default function MenuPage() {
             <Reveal key={item.id} from="up" delay={(i % 3) * 80}>
               <MenuCard
                 item={item}
-                index={ITEMS.indexOf(item)}
-                onSelect={() =>
-                  setDialog({
-                    title: "TAMBAH KE PESANAN",
-                    lines: [
-                      `item: ${item.name}`,
-                      `price: ${formatPrice(item.price)}`,
-                      "",
-                      "Pesanan belum bisa diproses online.",
-                      "Silakan pesan langsung di tempat.",
-                    ],
-                  })
-                }
+                onSelect={() => setSelected(item)}
                 className="h-full"
               />
             </Reveal>
           ))}
         </div>
 
-        {/* Note */}
+        {/* Catatan */}
         <Reveal from="up" delay={120}>
-          <div className="mt-14 border border-line bg-panel p-6">
-            <p className="font-mono text-[11px] leading-relaxed text-mute">
-              <span className="mr-2 text-lime">&gt;</span>
-              <span className="text-cream">Informasi alergi:</span> susu oat,
-              susu sapi, dan kacang-kacangan mungkin ada di dalam. Tanyakan
-              ke barista bila kamu perlu tahu.
-              <br />
-              <span className="mr-2 text-lime">&gt;</span>
-              <span className="text-cream">Tambahan:</span> extra shot
-              +8k, susu alternatif +5k, decaf gratis.
-            </p>
+          <div className="mt-14 grid gap-6 rounded-2xl border border-line bg-card p-6 md:grid-cols-2 md:p-8">
+            <div>
+              <h3 className="display text-lg text-ink">Informasi alergi</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                Beberapa bahan dapat mengandung susu sapi, susu oat, atau
+                kacang-kacangan. Hubungi barista sebelum memesan jika Anda
+                memiliki alergi atau pantangan makanan.
+              </p>
+            </div>
+            <div>
+              <h3 className="display text-lg text-ink">Pilihan tambahan</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                Extra shot dikenakan biaya Rp8k. Susu alternatif tersedia
+                dengan tambahan Rp5k. Pilihan decaf tersedia tanpa biaya
+                tambahan.
+              </p>
+            </div>
           </div>
         </Reveal>
       </div>
 
-      <RetroDialog
-        open={!!dialog}
-        onClose={() => setDialog(null)}
-        title={dialog?.title}
-        lines={dialog?.lines}
+      <OrderDialog
+        open={!!selected}
+        onClose={() => setSelected(null)}
+        title="Pesanan belum tersedia online"
+        itemName={selected?.name}
+        price={selected ? formatPrice(selected.price) : null}
       />
     </>
   );

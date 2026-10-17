@@ -1,47 +1,47 @@
 import Link from "next/link";
 import { INFO } from "@/data/menu";
 
+const NAV = [
+  { href: "/", label: "Beranda" },
+  { href: "/menu", label: "Menu" },
+  { href: "/about", label: "Tentang" },
+  { href: "/contact", label: "Kontak" },
+];
+
 export default function Footer() {
   return (
-    <footer className="border-t border-line bg-panel">
+    <footer className="on-dark border-t border-line-dk">
       {/* Oversized wordmark */}
-      <div className="overflow-hidden border-b border-line px-5 py-10 md:px-8">
-        <p className="display translate-y-[0.14em] text-center text-[16vw] leading-none text-line-2 select-none">
-          BYTE//BREW
+      <div className="overflow-hidden px-5 py-10 md:px-8">
+        <p className="display translate-y-[0.12em] text-center text-[16vw] leading-none text-cream/10 select-none">
+          Bytebrew
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-12 md:grid-cols-4 md:px-8">
+      <div className="mx-auto grid max-w-[1240px] gap-10 border-t border-line-dk px-5 py-12 md:grid-cols-4 md:px-8">
         {/* Brand */}
         <div className="md:col-span-2">
-          <p className="display text-xl">
-            BYTE<span className="text-lime">//</span>BREW
-          </p>
-          <p className="mt-2 max-w-xs font-mono text-xs leading-relaxed text-mute">
+          <p className="display text-2xl text-cream">Bytebrew</p>
+          <p className="mt-2 max-w-xs text-sm leading-relaxed text-cream-2">
             {INFO.tagline}
           </p>
-          <p className="mt-4 font-mono text-[10px] tracking-widest text-mute uppercase">
-            <span className="mr-2 inline-block h-1.5 w-1.5 bg-lime align-middle" />
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-line-dk px-3 py-1.5 text-xs font-medium text-cream-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-lt" />
             Buka setiap hari
           </p>
         </div>
 
         {/* Nav */}
         <div>
-          <p className="eyebrow mb-4 text-lime-dim">Navigasi</p>
+          <p className="eyebrow mb-4 text-cream-2/70">Halaman</p>
           <ul className="space-y-2">
-            {[
-              { href: "/", label: "Beranda" },
-              { href: "/menu", label: "Menu" },
-              { href: "/about", label: "Tentang" },
-              { href: "/contact", label: "Kontak" },
-            ].map((l) => (
+            {NAV.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="font-mono text-xs text-mute transition-colors hover:text-lime"
+                  className="text-sm text-cream-2 transition-colors hover:text-amber-lt"
                 >
-                  /{l.label.toLowerCase()}
+                  {l.label}
                 </Link>
               </li>
             ))}
@@ -50,12 +50,12 @@ export default function Footer() {
 
         {/* Hours */}
         <div>
-          <p className="eyebrow mb-4 text-lime-dim">Jam buka</p>
-          <ul className="space-y-2 font-mono text-xs">
+          <p className="eyebrow mb-4 text-cream-2/70">Jam buka</p>
+          <ul className="space-y-2 text-sm">
             {INFO.hours.map((h) => (
               <li key={h.day} className="flex justify-between gap-4">
-                <span className="text-cream">{h.day}</span>
-                <span className="text-mute">{h.time}</span>
+                <span className="text-cream-2">{h.day}</span>
+                <span className="price text-cream">{h.time}</span>
               </li>
             ))}
           </ul>
@@ -63,14 +63,14 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="flex flex-col gap-3 border-t border-line px-5 py-5 font-mono text-[10px] tracking-wider text-mute uppercase md:flex-row md:items-center md:justify-between md:px-8">
-        <p>© {new Date().getFullYear()} BYTE//BREW — Seluruh hak cipta dilindungi</p>
+      <div className="flex flex-col gap-3 border-t border-line-dk px-5 py-5 text-xs text-cream-2/80 md:flex-row md:items-center md:justify-between md:px-8">
+        <p>© {new Date().getFullYear()} Bytebrew — Seluruh hak cipta dilindungi</p>
         <div className="flex flex-wrap gap-4">
           {INFO.socials.map((s) => (
             <a
               key={s.label}
               href={s.href}
-              className="transition-colors hover:text-lime"
+              className="transition-colors hover:text-amber-lt"
             >
               {s.label}
             </a>

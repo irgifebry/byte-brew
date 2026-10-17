@@ -2,23 +2,17 @@
 
 import { formatPrice } from "@/data/menu";
 
-const TAG_STYLE = {
-  "Paling laris": "bg-lime text-void",
-  Baru: "border border-lime text-lime",
-};
-
 /**
- * Kartu produk. `index` dipakai sebagai nomor besar di kartu.
+ * Kartu produk. Foto besar di atas, nama serif, tasting notes,
+ * dan harga. Tidak ada nomor urut — itu terbaca seperti katalog teknis.
  */
-export default function MenuCard({ item, index = 0, onSelect, className = "" }) {
-  const num = String(index + 1).padStart(2, "0");
-
+export default function MenuCard({ item, onSelect, className = "" }) {
   return (
     <article
-      className={`group hover-lift relative flex flex-col border border-line bg-panel ${className}`}
+      className={`hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-card ${className}`}
     >
-      {/* Image + fallback gradient */}
-      <div className="relative aspect-4/3 overflow-hidden bg-gradient-to-br from-line via-panel-2 to-void">
+      {/* Image + fallback */}
+      <div className="relative aspect-4/3 overflow-hidden bg-paper-2">
         <img
           src={item.img}
           alt={item.name}
@@ -29,17 +23,8 @@ export default function MenuCard({ item, index = 0, onSelect, className = "" }) 
           }}
         />
 
-        {/* Big number watermark */}
-        <span className="pointer-events-none absolute -bottom-3 left-2 display text-[5rem] leading-none text-void/60 select-none">
-          {num}
-        </span>
-
         {item.tag && (
-          <span
-            className={`absolute top-3 left-3 px-2 py-1 font-mono text-[9px] font-bold tracking-widest uppercase ${
-              TAG_STYLE[item.tag] || "border border-line text-cream"
-            }`}
-          >
+          <span className="absolute top-3 left-3 rounded-full bg-cream/95 px-3 py-1 text-[11px] font-semibold text-espresso shadow-sm backdrop-blur-sm">
             {item.tag}
           </span>
         )}
@@ -47,23 +32,34 @@ export default function MenuCard({ item, index = 0, onSelect, className = "" }) 
 
       {/* Body */}
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="display text-lg leading-tight">{item.name}</h3>
-          <span className="shrink-0 font-mono text-sm font-bold text-lime">
-            {formatPrice(item.price)}
-          </span>
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="display text-lg text-ink">{item.name}</h3>
+          <span className="price shrink-0 text-ink">{formatPrice(item.price)}</span>
         </div>
 
-        <p className="mt-2 flex-1 font-mono text-[11px] leading-relaxed text-mute">
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-2">
           {item.desc}
         </p>
+
+        {item.notes?.length > 0 && (
+          <ul className="mt-4 flex flex-wrap gap-1.5">
+            {item.notes.map((n) => (
+              <li
+                key={n}
+                className="rounded-full bg-paper-2 px-2.5 py-1 text-[11px] font-medium text-ink-2"
+              >
+                {n}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <button
           type="button"
           onClick={() => onSelect?.(item)}
-          className="mt-5 w-full border border-line py-2.5 font-mono text-[10px] font-bold tracking-widest text-cream uppercase transition-colors hover:border-lime hover:bg-lime hover:text-void"
+          className="mt-5 w-full rounded-full border border-line py-2.5 text-sm font-semibold text-ink transition-colors hover:border-espresso hover:bg-espresso hover:text-cream"
         >
-          + Tambah
+          Pilih menu ini
         </button>
       </div>
     </article>

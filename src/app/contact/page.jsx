@@ -1,9 +1,9 @@
 import ContactClient from "./ContactClient";
 
 export const metadata = {
-  title: "Contact",
+  title: "Kontak",
   description:
-    "Cek jam buka, atau mampir langsung. BYTE//BREW, Senopati, Jakarta Selatan.",
+    "Lihat jam operasional dan lokasi Bytebrew di Senopati, Jakarta Selatan.",
 };
 
 export default function ContactPage() {

@@ -42,9 +42,9 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="grain relative flex min-h-[100svh] items-end overflow-hidden">
+    <section className="relative flex min-h-[100svh] items-end shadow-[0_20px_80px_-10px_rgba(36,27,21,0.7)]">
       {/* ---------- Video layer ---------- */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
         <video
           ref={videoRef}
           className={`h-full w-full object-cover transition-opacity duration-1000 ${
@@ -66,68 +66,55 @@ export default function Hero() {
         </video>
 
         {/* Overlay.
-            - Linear gradient: selalu ada, memberi kontras teks di bagian bawah.
-            - Vignette: HANYA di layar besar. Di viewport portrait/mobile
-              ellipse-nya menutup hampir seluruh frame sehingga footage
-              jadi tidak kelihatan sama sekali. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-void/60 via-void/25 to-void" />
-        <div className="absolute inset-0 hidden bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(10,10,10,0.7)_100%)] md:block" />
-        {/* Di mobile, tambah sisi gelap tipis biar headline tetap terbaca */}
-        <div className="absolute inset-0 bg-gradient-to-r from-void/45 via-transparent to-void/20 md:hidden" />
+            Warna warm (amber), bukan hitam netral — biar footage-nya
+            terasa seperti cahaya lampu kedai, bukan layar gelap.
+            Vignette hanya di layar besar; di viewport portrait ellipse-nya
+            menutup hampir seluruh frame. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-espresso/55 via-espresso/25 to-espresso/95" />
+        <div className="absolute inset-0 hidden bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(36,27,21,0.65)_100%)] md:block" />
+        <div className="absolute inset-0 bg-gradient-to-r from-espresso/45 via-transparent to-transparent md:hidden" />
       </div>
 
-      {/* ---------- Content ---------- */}
-      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pt-32 pb-14 md:px-8 md:pb-20">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-[10px] tracking-[0.25em] text-lime uppercase">
-            Kopi pilihan // sejak 2023
-          </span>
-          <span className="hidden h-px flex-1 bg-lime/30 sm:block" />
-        </div>
-
-        <h1 className="display mt-5 max-w-[19ch] text-[clamp(2.75rem,10vw,9rem)]">
-          KOPI PILIHAN,
+      {/* ---------- Content ----------
+          Jangan pakai class `.on-dark` di sini: class itu menyertakan
+          `background-color` solid, yang akan menutupi video di belakangnya.
+          Warna teks ditulis eksplisit. */}
+      <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 pt-32 pb-14 md:px-8 md:pb-20">
+        <h1 className="display mt-5 max-w-[16ch] text-[clamp(2.75rem,9vw,7.5rem)] text-cream">
+          Kopi berkualitas,
           <br />
-          <span className="text-lime">DIROAST</span>
-          <br />
-          SETIAP HARI<span className="cursor-block" />
+          di-roast setiap hari.
         </h1>
 
         <div className="mt-8 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between">
-          <p className="max-w-sm text-sm leading-relaxed text-cream/70 md:text-base">
-            Kopi pilihan yang di-roast dalam batch kecil, digiling
-            saat pesanan masuk, dan selalu disajikan hangat.
+          <p className="max-w-md text-[0.95rem] leading-relaxed text-cream-2 md:text-base">
+            Biji single origin berasal dari kebun yang kami kenal. Kami
+            me-roast dalam batch kecil setiap minggu, menggiling biji saat
+            pesanan masuk, dan menyajikan minuman dalam waktu tiga menit.
           </p>
 
           <div className="flex flex-wrap gap-3">
             <Link
               href="/menu"
-              className="group border border-lime bg-lime px-6 py-3 font-mono text-xs font-bold tracking-wider text-void uppercase transition-transform hover:-translate-y-0.5 active:translate-y-0"
+              className="btn border border-cream bg-cream text-espresso hover:bg-amber-lt hover:border-amber-lt"
             >
               Lihat menu
-              <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
-                →
-              </span>
             </Link>
             <Link
               href="/contact"
-              className="border border-cream/30 px-6 py-3 font-mono text-xs font-bold tracking-wider text-cream uppercase transition-colors hover:border-cream"
+              className="btn border border-cream/40 text-cream hover:border-cream hover:bg-cream/10"
             >
-              Pesan meja
+              Reservasi
             </Link>
           </div>
         </div>
 
         {/* Scroll hint */}
-        <div className="mt-12 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-mute uppercase md:mt-16">
-          <span className="inline-block h-8 w-px bg-lime/40" />
-          Scroll ke bawah
+        <div className="mt-12 flex items-center gap-2 text-xs font-medium tracking-wide text-cream-2/70 md:mt-16">
+          <span className="inline-block h-8 w-px bg-amber-lt/60" />
+          Gulir untuk melihat lebih lanjut
         </div>
       </div>
-
-      {/* Corner brackets */}
-      <span className="pointer-events-none absolute top-24 right-6 hidden h-6 w-6 border-t border-r border-lime/40 lg:block" />
-      <span className="pointer-events-none absolute bottom-8 left-6 hidden h-6 w-6 border-b border-l border-lime/40 lg:block" />
     </section>
   );
 }

@@ -1,25 +1,21 @@
-import { JetBrains_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Fraunces, Manrope } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import IntroScreen from "@/components/IntroScreen";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+// Fraunces = serif display. Axes SOFT & WONK bikin karakternya warm
+// dan sedikit "handmade", bukan serif kaku ala corporate.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-space-grotesk",
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -27,29 +23,30 @@ export const metadata = {
   // Ganti ke domain asli saat website dipublikasikan
   metadataBase: new URL("https://bytebrew.id"),
   title: {
-    default: "BYTE//BREW — Kopi pilihan, di-roast setiap hari.",
-    template: "%s // BYTE//BREW",
+    default: "BYTEBREW — Kopi berkualitas, di-roast setiap hari.",
+    template: "%s // BYTEBREW",
   },
   description:
-    "Kedai kopi pilihan di Senopati, Jakarta Selatan. Biji di-roast dalam batch kecil setiap minggu dan diseduh saat pesanan masuk.",
+    "Kedai kopi spesialti di Senopati, Jakarta Selatan. Biji single origin di-roast dalam batch kecil setiap minggu dan digiling saat pesanan masuk.",
   keywords: [
     "specialty coffee",
     "coffee shop Jakarta",
+    "senopati",
     "cold brew",
     "manual brew",
-    "BYTE BREW",
+    "BYTEBREW",
   ],
   openGraph: {
-    title: "BYTE//BREW — Kopi pilihan, di-roast setiap hari.",
-    description: "Kedai kopi pilihan di Senopati, Jakarta Selatan.",
+    title: "BYTEBREW — Kopi berkualitas, di-roast setiap hari.",
+    description: "Kedai kopi spesialti di Senopati, Jakarta Selatan.",
     type: "website",
     images: ["/hero-poster.jpg"],
   },
 };
 
 export const viewport = {
-  themeColor: "#0a0a0a",
-  colorScheme: "dark",
+  themeColor: "#f6f1e7",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }) {
@@ -68,8 +65,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${jetbrains.variable} ${inter.variable} antialiased`}
+        className={`${fraunces.variable} ${manrope.variable} antialiased`}
       >
+        <IntroScreen />
         <Navbar />
         <main>{children}</main>
         <Footer />

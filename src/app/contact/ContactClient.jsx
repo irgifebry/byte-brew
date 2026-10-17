@@ -1,112 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import RetroDialog from "@/components/RetroDialog";
+import OrderDialog from "@/components/OrderDialog";
 import Reveal from "@/components/Reveal";
 import { INFO } from "@/data/menu";
 
 // Google Maps `output=embed` memblokir framing (301 + X-Frame-Options),
 // jadi pakai OpenStreetMap yang framable & tanpa API key.
-// Link "Open in Maps" tetap arahkan ke Google Maps untuk navigasi.
+// Link "Buka di Maps" tetap arahkan ke Google Maps untuk navigasi.
 const MAPS_EMBED =
   "https://www.openstreetmap.org/export/embed.html?bbox=106.8057%2C-6.2581%2C106.8177%2C-6.2461&layer=mapnik&marker=-6.2521%2C106.8117";
 
-// Filter ini mengubah peta OSM yang terang -> tema gelap BYTE//BREW
-const MAP_DARK = "invert(0.92) hue-rotate(180deg) saturate(0.55) brightness(0.92) contrast(1.05)";
+// Filter: peta OSM terang -> nuansa hangat, biar nyambung sama blok gelap
+const MAP_WARM = "sepia(0.35) saturate(1.15) contrast(0.94) brightness(1.02)";
 
 export default function ContactClient() {
-  const [dialog, setDialog] = useState(null);
-  const [form, setForm] = useState({ name: "", email: "", date: "", note: "" });
+  const [dialog, setDialog] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    date: "",
+    note: "",
+  });
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const submit = (e) => {
     e.preventDefault();
-    setDialog({
-      title: "PESANAN DITERIMA",
-      lines: [
-        `name: ${form.name || "(kosong)"}`,
-        `email: ${form.email || "(kosong)"}`,
-        `date: ${form.date || " ASAP "}`,
-        "",
-        "Pesanan belum bisa diproses online.",
-        "Silakan hubungi kami langsung.",
-      ],
-    });
+    setDialog(true);
   };
 
   return (
     <>
       {/* --- Header --- */}
-      <section className="grain relative overflow-hidden border-b border-line pt-32 pb-16 md:pt-44 md:pb-20">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src="/still-beans.jpg"
-            alt=""
-            className="h-full w-full object-cover opacity-25"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/90 to-void" />
-        </div>
+      <section className="relative overflow-hidden border-b border-line bg-paper-2 pt-32 pb-14 md:pt-44 md:pb-20">
+        <div className="paper-tooth absolute inset-0 opacity-60" />
 
-        <div className="mx-auto max-w-[1400px] px-5 md:px-8">
-          <p className="eyebrow flex items-center gap-3 text-lime">
-            <span className="inline-block h-1.5 w-1.5 bg-lime" />
-            [04] — Hubungi kami
+        <div className="relative mx-auto max-w-[1240px] px-5 md:px-8">
+          <p className="eyebrow flex items-center gap-3 text-amber-dp">
+            <span className="inline-block h-px w-8 bg-amber" />
+            Kontak
           </p>
-          <h1 className="display mt-5 text-[clamp(2.5rem,9vw,7.5rem)]">
-            PESAN MEJA<span className="cursor-block" />
+          <h1 className="display mt-5 text-[clamp(2.5rem,8vw,6rem)] text-ink">
+            Kunjungi atau hubungi Bytebrew.
           </h1>
-          <p className="mt-6 max-w-md text-sm leading-relaxed text-cream/60">
-            Untuk grup di atas 6 orang, mampir dulu atau mention di DM
-            ya — space kami kecil dan mejanya cepat penuh.
+          <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-ink-2">
+            Untuk rombongan lebih dari enam orang, silakan hubungi kami
+            melalui WhatsApp terlebih dahulu. Kapasitas tempat terbatas.
           </p>
         </div>
       </section>
 
       {/* --- Info + form --- */}
-      <section className="border-b border-line">
-        <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-20 md:grid-cols-12 md:gap-10 md:py-28">
+      <section className="border-b border-line bg-paper">
+        <div className="mx-auto grid max-w-[1240px] gap-12 px-5 py-20 md:grid-cols-12 md:gap-10 md:py-28">
           {/* Info */}
           <div className="md:col-span-5">
             <Reveal from="left">
-              <p className="eyebrow text-lime-dim">Find us</p>
+             <p className="eyebrow text-amber-dp">Lokasi dan informasi</p>
               <div className="mt-6 space-y-8">
-                <div className="border-l-2 border-lime pl-4">
-                  <p className="font-mono text-[10px] tracking-widest text-lime uppercase">
-                    Address
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-cream/80">
+                <div>
+                  <p className="text-sm font-semibold text-ink">Alamat</p>
+                  <p className="mt-1.5 text-[0.95rem] leading-relaxed text-ink-2">
                     {INFO.address}
+                    <br />
+                    Kebayoran Baru, Jakarta Selatan 12190
                   </p>
                 </div>
 
-                <div className="border-l-2 border-line pl-4">
-                  <p className="font-mono text-[10px] tracking-widest text-mute uppercase">
-                    Jam buka
-                  </p>
-                  <ul className="mt-2 space-y-2">
+                <div>
+                  <p className="text-sm font-semibold text-ink">Jam buka</p>
+                  <ul className="mt-1.5 space-y-2">
                     {INFO.hours.map((h) => (
                       <li
                         key={h.day}
-                        className="flex justify-between gap-4 font-mono text-xs"
+                        className="flex justify-between gap-4 text-[0.95rem]"
                       >
-                        <span className="text-cream/80">{h.day}</span>
-                        <span className="text-lime">{h.time}</span>
+                        <span className="text-ink-2">{h.day}</span>
+                        <span className="price text-ink">{h.time}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="border-l-2 border-line pl-4">
-                  <p className="font-mono text-[10px] tracking-widest text-mute uppercase">
-                    Direct
-                  </p>
-                  <ul className="mt-2 space-y-1.5 font-mono text-xs">
+                <div>
+                   <p className="text-sm font-semibold text-ink">Hubungi kami</p>
+                  <ul className="mt-1.5 space-y-1.5 text-[0.95rem]">
                     <li>
                       <a
                         href={`mailto:${INFO.email}`}
-                        className="text-cream/80 transition-colors hover:text-lime"
+                        className="text-ink-2 transition-colors hover:text-amber-dp"
                       >
                         {INFO.email}
                       </a>
@@ -114,7 +97,7 @@ export default function ContactClient() {
                     <li>
                       <a
                         href={`tel:${INFO.phone.replace(/\s/g, "")}`}
-                        className="text-cream/80 transition-colors hover:text-lime"
+                        className="text-ink-2 transition-colors hover:text-amber-dp"
                       >
                         {INFO.phone}
                       </a>
@@ -130,87 +113,85 @@ export default function ContactClient() {
             <Reveal from="right" delay={100}>
               <form
                 onSubmit={submit}
-                className="grain relative border border-line bg-panel p-6 md:p-8"
+                className="rounded-2xl border border-line bg-card p-6 md:p-8"
               >
-                <span className="absolute -top-px -left-px h-4 w-4 border-t-2 border-l-2 border-lime" />
-                <span className="absolute -right-px -bottom-px h-4 w-4 border-r-2 border-b-2 border-lime" />
+                <h2 className="display text-2xl text-ink">Form reservasi</h2>
+                <p className="mt-2 text-sm text-ink-2">
+                  Lengkapi informasi berikut untuk mengajukan reservasi.
+                </p>
 
-                <p className="eyebrow mb-8 text-lime">Booking form</p>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="01 / Name" id="name">
+                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                  <Field label="Nama" id="name">
                     <input
                       id="name"
                       type="text"
                       required
                       value={form.name}
                       onChange={set("name")}
-                      placeholder="Nama kamu"
-                      className="w-full border border-line bg-void px-4 py-3 font-mono text-xs text-cream outline-none transition-colors placeholder:text-mute/60 focus:border-lime"
+                      placeholder="Masukkan nama Anda"
+                      className="field"
                     />
                   </Field>
 
-                  <Field label="02 / Email" id="email">
+                  <Field label="Email" id="email">
                     <input
                       id="email"
                       type="email"
                       required
                       value={form.email}
                       onChange={set("email")}
-                      placeholder="you@domain.com"
-                      className="w-full border border-line bg-void px-4 py-3 font-mono text-xs text-cream outline-none transition-colors placeholder:text-mute/60 focus:border-lime"
+                      placeholder="nama@email.com"
+                      className="field"
                     />
                   </Field>
 
-                  <Field label="03 / Date & time" id="date">
+                  <Field label="Tanggal dan waktu" id="date">
                     <input
                       id="date"
                       type="datetime-local"
                       required
                       value={form.date}
                       onChange={set("date")}
-                      className="w-full border border-line bg-void px-4 py-3 font-mono text-xs text-cream outline-none transition-colors focus:border-lime"
+                      className="field"
                     />
                   </Field>
 
-                  <Field label="04 / Headcount" id="headcount">
+                  <Field label="Jumlah pengunjung" id="headcount">
                     <select
                       id="headcount"
-                      className="w-full border border-line bg-void px-4 py-3 font-mono text-xs text-cream outline-none transition-colors focus:border-lime"
+                      className="field"
                       defaultValue="2"
                     >
                       {[1, 2, 3, 4, 5, 6].map((n) => (
                         <option key={n} value={n}>
-                          {n} {n === 1 ? "person" : "people"}
+                          {n} orang
                         </option>
                       ))}
                     </select>
                   </Field>
 
                   <div className="sm:col-span-2">
-                    <Field label="05 / Note (optional)" id="note">
+                    <Field label="Catatan (opsional)" id="note">
                       <textarea
                         id="note"
                         rows={4}
                         value={form.note}
                         onChange={set("note")}
-                        placeholder="Anything we should know?"
-                        className="w-full resize-none border border-line bg-void px-4 py-3 font-mono text-xs text-cream outline-none transition-colors placeholder:text-mute/60 focus:border-lime"
+                        placeholder="Tuliskan preferensi meja atau informasi lain yang perlu kami ketahui."
+                        className="field resize-none"
                       />
                     </Field>
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="mt-8 w-full border-2 border-lime bg-lime px-6 py-4 font-mono text-xs font-bold tracking-widest text-void uppercase transition-transform hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  Kirim pesanan →
+                <button type="submit" className="btn btn-primary mt-8 w-full">
+                  Kirim permintaan reservasi
                 </button>
 
-                <p className="mt-4 font-mono text-[10px] text-mute">
-                  Form ini belum terhubung ke sistem. Untuk memesan,
-                  silakan hubungi kami lewat telepon atau Instagram.
+                <p className="mt-4 text-xs leading-relaxed text-ink-3">
+                  Form ini belum terhubung ke sistem reservasi. Untuk
+                  mengajukan reservasi, hubungi kami melalui telepon atau
+                  Instagram.
                 </p>
               </form>
             </Reveal>
@@ -219,33 +200,26 @@ export default function ContactClient() {
       </section>
 
       {/* --- Map --- */}
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-8 md:py-28">
+      <section className="on-dark border-b border-line-dk">
+        <div className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28">
           <Reveal from="up">
-            <p className="eyebrow flex items-center gap-3 text-lime">
-              <span className="inline-block h-1.5 w-1.5 bg-lime" />
-              Location
-            </p>
+            <p className="eyebrow text-amber-lt">Lokasi Bytebrew</p>
           </Reveal>
 
           <Reveal from="up" delay={80}>
-            <div className="relative mt-8 aspect-video overflow-hidden border border-line bg-panel">
-              {/* Fallback: tampil kalau iframe gagal load */}
-              <div className="grid-lines absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-                <span className="display text-4xl text-lime">BYTE//BREW</span>
-                <span className="font-mono text-[10px] tracking-widest text-mute">
-                  {INFO.address}
-                </span>
-                <span className="font-mono text-[10px] text-mute">
-                  Memuat peta&hellip;
-                </span>
+            <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-line-dk bg-espresso-2">
+              {/* Fallback kalau iframe gagal load */}
+              <div className="paper-tooth absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+                <span className="display text-4xl text-cream">Bytebrew</span>
+                <span className="text-sm text-cream-2">{INFO.address}</span>
+                <span className="text-xs text-cream-2/60">Memuat peta…</span>
               </div>
 
               <iframe
                 src={MAPS_EMBED}
-                title="Lokasi BYTE//BREW — Senopati, Jakarta Selatan"
+                title={`Lokasi Bytebrew — ${INFO.address}`}
                 className="relative h-full w-full border-0"
-                style={{ filter: MAP_DARK }}
+                style={{ filter: MAP_WARM }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -253,27 +227,29 @@ export default function ContactClient() {
           </Reveal>
 
           <Reveal from="up" delay={140}>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] text-mute">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-cream-2">
               <span>Senopati, Kebayoran Baru, Jakarta Selatan 12190</span>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(INFO.mapsQuery)}`}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="border border-line px-3 py-1.5 text-cream transition-colors hover:border-lime hover:text-lime"
+                className="rounded-full border border-line-dk px-4 py-2 text-cream transition-colors hover:border-amber-lt hover:text-amber-lt"
               >
-                Open in Maps ↗
+                Buka di Maps
               </a>
             </div>
           </Reveal>
         </div>
       </section>
 
-      <RetroDialog
-        open={!!dialog}
-        onClose={() => setDialog(null)}
-        title={dialog?.title}
-        lines={dialog?.lines}
-      />
+      <OrderDialog open={dialog} onClose={() => setDialog(false)} title="Permintaan reservasi belum terkirim">
+        <p>
+          Terima kasih, {form.name || ""}. Permintaan Anda belum terkirim
+          karena form ini belum terhubung ke sistem reservasi. Silakan
+          hubungi kami melalui WhatsApp di {INFO.phone} untuk mengajukan
+          reservasi.
+        </p>
+      </OrderDialog>
     </>
   );
 }
@@ -283,7 +259,7 @@ function Field({ label, id, children }) {
     <div>
       <label
         htmlFor={id}
-        className="mb-2 block font-mono text-[10px] tracking-widest text-mute uppercase"
+        className="mb-2 block text-[13px] font-semibold text-ink"
       >
         {label}
       </label>
