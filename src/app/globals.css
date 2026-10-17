@@ -45,8 +45,8 @@
   --color-line-dk: #443529;
 
   /* --- Font --- */
-  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-instrument-sans);
 
   /* --- Motion --- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

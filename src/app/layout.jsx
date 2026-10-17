@@ -1,22 +1,27 @@
-import { Fraunces, Manrope } from "next/font/google";
+import { Instrument_Serif, Instrument_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IntroScreen from "@/components/IntroScreen";
 import "./globals.css";
 
-// Fraunces = serif display. Axes SOFT & WONK bikin karakternya warm
-// dan sedikit "handmade", bukan serif kaku ala corporate.
-const fraunces = Fraunces({
+// Instrument Serif = serif display. Karakternya modern, tajam, dan
+// elegan — serif kontemporer yang sedang tren, bukan serif kaku ala corporate.
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
-  variable: "--font-fraunces",
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
   display: "swap",
+  fallback: [],
+  adjustFontFallback: false,
 });
 
-const manrope = Manrope({
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-instrument-sans",
   display: "swap",
+  fallback: [],
+  adjustFontFallback: false,
 });
 
 export const metadata = {
@@ -93,7 +98,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${fraunces.variable} ${manrope.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${instrumentSans.variable} antialiased`}
       >
         <IntroScreen />
         <Navbar />
