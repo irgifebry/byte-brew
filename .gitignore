@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js
+.next/
+out/
+build/
+next-env.d.ts
+
+# misc
+.DS_Store
+*.pem
+.vercel
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env
+.env*.local
+
+# note: footage_hero.mp4 sengaja TIDAK di-ignore (dipakai sebagai hero video)

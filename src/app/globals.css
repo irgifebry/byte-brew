@@ -1,0 +1,298 @@
+@import "tailwindcss";
+
+/* ============================================================
+   BYTE//BREW — Design Tokens
+   Dark void + neon lime. Brutalist tech / agency aesthetic.
+   ============================================================ */
+
+@theme {
+  /* --- Color --- */
+  --color-void: #0a0a0a;
+  --color-panel: #111110;
+  --color-panel-2: #161614;
+  --color-cream: #f5f5f0;
+  --color-lime: #c6f24e;
+  --color-lime-dim: #7a8f2e;
+  --color-line: #262626;
+  --color-line-2: #3a3a3a;
+  --color-mute: #8a8a80;
+
+  /* --- Font --- */
+  --font-display: var(--font-space-grotesk), "Arial Black", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-brutal: cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-lime);
+  color: var(--color-void);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line-2);
+  border: 2px solid var(--color-void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-lime);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+/* Hard offset shadow — brutalist signature */
+@utility shadow-brutal {
+  box-shadow: 4px 4px 0 0 var(--color-lime);
+}
+@utility shadow-brutal-sm {
+  box-shadow: 3px 3px 0 0 var(--color-lime);
+}
+@utility shadow-brutal-lg {
+  box-shadow: 8px 8px 0 0 var(--color-lime);
+}
+@utility shadow-brutal-dark {
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+/* Terminal cursor */
+@utility cursor-block {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background-color: var(--color-lime);
+  animation: blink 1.1s steps(2, start) infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Grain / noise overlay */
+@utility grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Grid lines background */
+@utility grid-lines {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+}
+
+/* Section vertical rhythm */
+@utility section-y {
+  padding-block: 6rem;
+}
+@media (min-width: 768px) {
+  .section-y {
+    padding-block: 9rem;
+  }
+}
+
+/* Mono eyebrow label */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Big display heading */
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+/* ============================================================
+   Marquee — infinite ticker
+   ============================================================ */
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-x 28s linear infinite;
+}
+.animate-marquee-fast {
+  animation: marquee-x 16s linear infinite;
+}
+
+.marquee-track:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   Scroll reveal
+   ------------------------------------------------------------
+   PENTING: state "hidden" hanya aktif kalau `html.js` sudah ada,
+   dan class itu hanya di-set oleh script inline di <head>.
+   Artinya: kalau JS gagal load / dinonaktifkan, konten tetap
+   terlihat normal (fail-safe, bukan blank page).
+   ============================================================ */
+
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-reveal="left"] {
+  transform: translateX(-28px);
+}
+html.js [data-reveal="right"] {
+  transform: translateX(28px);
+}
+html.js [data-reveal="scale"] {
+  transform: scale(0.95);
+}
+html.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+/* ============================================================
+   Hover lift
+   ============================================================ */
+
+.hover-lift {
+  transition:
+    transform 0.32s var(--ease-out-expo),
+    border-color 0.32s,
+    box-shadow 0.32s;
+}
+.hover-lift:hover {
+  transform: translate(-3px, -3px);
+  border-color: var(--color-lime);
+}
+
+/* Image zoom on hover */
+.img-zoom {
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.group:hover .img-zoom {
+  transform: scale(1.06);
+}
+
+/* ============================================================
+   Dialog
+   ============================================================ */
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-dialog-in {
+  animation: dialog-in 0.26s var(--ease-out-expo) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.26s ease both;
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Fallback: kalau observer tidak pernah jalan, pastikan tetap tampil */
+html.js [data-reveal].is-reveal-fallback {
+  opacity: 1 !important;
+  transform: none !important;
+}
