@@ -75,9 +75,26 @@ function CountUp({ to, decimals = 0, suffix = "" }) {
 
 export default function Story() {
   return (
-    <section className="relative border-b border-line bg-paper shadow-[0_-24px_60px_-16px_rgba(36,27,21,0.55)]">
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <div className="grid gap-12 py-20 md:grid-cols-12 md:gap-10 md:py-28">
+    <section className="relative border-b border-line bg-paper">
+      {/* Seam: menyatukan hero (espresso, video) dengan section krem ini.
+
+          Sebelumnya transisi ditangani box-shadow yang soar ke atas:
+          gelap menumpuk di atas gelap, lalu dipotong garis lurus —
+          justru emphasizing kontrasnya. Sekarang diganti gradien yang
+          larut dari warna section di atas ke warna section ini, jadi
+          kedua blok terbaca sebagai satu permukaan.
+
+          Panjang seam (h-28 / h-44) sengaja lebih pendek dari padding
+          atas (pt-36 / pt-56): teks eyebrow selalu mulai setelah
+          gradasi selesai, jadi tidak pernah duduk di bagian yang masih
+          gelap dan kontrasnya tetap terjaga. */}
+      <div className="seam-to-paper pointer-events-none absolute inset-x-0 top-0 h-28 md:h-44" />
+
+      {/* `relative` wajib: tanpa itu, div ini dipaint SEBELUM lapisan
+          seam (elemen positioned menang atas in-flow), dan gradasinya
+          akan menutupi isi section. */}
+      <div className="relative mx-auto max-w-[1240px] px-5 pt-36 pb-20 md:px-8 md:pt-56 md:pb-28">
+        <div className="grid gap-12 md:grid-cols-12 md:gap-10">
           {/* --- Text --- */}
           <div className="md:col-span-7">
             <Reveal from="up">

@@ -28,6 +28,18 @@
   --color-cream: #f3ebdf;
   --color-cream-2: #c2b2a0;
 
+  /* Krem hangat — `paper` + 10% amber dalam oklab. Dipakai sebagai
+     jangkar gradasi (lihat `.seam-to-paper`): ramp espresso→paper
+     murni melewati abu-abu kelabu di tengah, yang terasa dingin
+     dan "terasing" dari karakter kertas halaman ini.
+
+     Harus tetap berupa token `@theme`, bukan custom property biasa:
+     minifier milik Tailwind hanya bisa menghitung fallback `color-mix`
+     kalau kedua warnanya token yang diketahuinya — kalau bukan, semua
+     stop tengahnya jatuh ke espresso solid dan gradiennya malah balik
+     jadi garis tegas. */
+  --color-cream-warm: #ecdfd2;
+
   /* --- Lines --- */
   --color-line: #ddd1bd;
   --color-line-dk: #443529;
@@ -295,6 +307,57 @@ body {
   }
 }
 
+/* ============================================================
+   Seam: blok gelap → kertas krem
+   ------------------------------------------------------------
+   Tanpa seam, video hero (espresso) yang menempel langsung ke
+   section terang (paper) berhenti dalam satu garis horizontal
+   yang sangat tajam — mata membaca dua blok, bukan satu halaman.
+
+   `seam-to-paper` adalah lapisan transisi yang menempel di ATAS
+   section terang: warna section di atas (gelap) di 0%, warna
+   section-nya sendiri (krem) di 100%. Karena 100%-nya persis
+   warna latar section, tepi bawah seam tidak terlihat sama sekali.
+
+   Ramp-nya dihitung di oklab, bukan sRGB: lightness naik monoton
+   (23 → 96) dengan jarak yang sama antar stop, jadi tidak ada
+   pita yang tiba-tiba terang atau gelap.
+
+   Arah tuju semua stop di antaranya bukan `--color-paper` langsung,
+   tapi `--color-cream-warm` (krem disisip sedikit amber). Ramp
+   espresso→paper murni melewati abu-abu kelabu di tengah — dingin,
+   dan "terasing" dari karakter kertas hangat halaman ini. Dengan
+   jangkar krem, lightness-nya tetap sama persis tapi chroma di pita
+   tengah naik ~40% dan hue tidak lagi melenceng ke arah abu.
+
+   Stop pertama (0% – ~30%) rapat dan gelap supaya ujung bawah
+   blok gelap tetap terbaca sebagai "ekor bayangan", bukan
+   kehujau-abuan. Baru setelah itu cahaya dibuka ke krem.
+
+   Catatan: jangkarnya harus ditulis langsung sebagai
+   `var(--color-cream-warm)` di tiap stop. Kalau dibungkus alias
+   (mis. `--seam-cream: var(--color-cream-warm)`), minifier Tailwind
+   tidak bisa menyelesaikan `color-mix`-nya dan fallback-nya jatuh
+   ke espresso solid — gradasinya malah balik jadi garis tegas
+   di browser yang memakai fallback.
+
+   EXAMPLE:
+     <section className="relative bg-paper">
+       <div className="seam-to-paper pointer-events-none absolute inset-x-0 top-0 h-44" />
+       ...
+   ============================================================ */
+@utility seam-to-paper {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-espresso) 0%,
+    color-mix(in oklab, var(--color-espresso) 86%, var(--color-cream-warm)) 14%,
+    color-mix(in oklab, var(--color-espresso) 70%, var(--color-cream-warm)) 32%,
+    color-mix(in oklab, var(--color-espresso) 44%, var(--color-cream-warm)) 55%,
+    color-mix(in oklab, var(--color-espresso) 20%, var(--color-cream-warm)) 78%,
+    var(--color-paper) 100%
+  );
+}
+
 /* Hover lift + zoom gambar */
 .hover-lift {
   transition:
@@ -451,6 +514,18 @@ html.js .intro-mask-in {
 html.intro-done.js .intro-mask-in {
   animation: intro-mask-rise 780ms var(--ease-out-expo) both;
   animation-delay: var(--intro-delay, 0ms);
+}
+
+/* Mobile: teks hero harus langsung terpaint (tidak disembunyikan di
+   balik mask) agar font web ter-render dan LCP tercatat. Animasi
+   "naik dari cetakan" tetap aktif di desktop. */
+@media (max-width: 767px) {
+  html.js .intro-mask-in {
+    transform: none;
+  }
+  html.intro-done.js .intro-mask-in {
+    animation: none;
+  }
 }
 @keyframes intro-mask-rise {
   from {

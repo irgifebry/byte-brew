@@ -52,7 +52,7 @@ export default function Reveal({
       failsafe = window.setTimeout(() => {
         setVisible(true);
         obs.disconnect();
-      }, 2500);
+      }, 1200);
     };
 
     if (document.documentElement.classList.contains("intro-done")) observe();
