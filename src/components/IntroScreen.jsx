@@ -17,6 +17,22 @@ import { useEffect, useRef, useState } from "react";
  * Di sini: countdown mulai saat frame pertama tampil, video hero
  * diam selama intro, lalu fade overlay dan animasi UI dijalankan
  * barengan (bukan berurutan) dengan easing yang sama.
+ *
+ * Kontrak event (dipakai Hero + Reveal + Navbar):
+ *   intro:prepare → video hero siap-siap di frame terakhir intro:
+ *                   dia MENYEEK ke posisi itu lalu TETAP DIAM.
+ *   intro:done    → animasi UI boleh jalan (overlay mulai fade).
+ *                   TIDAK boleh menyalakan video hero.
+ *   intro:reveal  → overlay sudah dicopot dari DOM; baru video hero
+ *                   mulai main, tepat dari frame yang dipegangnya.
+ *
+ * Kenapa perlu `intro:reveal`: kalau hero mulai main sebelum fade
+ * selesai, hero maju mengikuti waktu nyata selama dissolve (pre-roll
+ * + fade ≈ 1 detik) sementara frame intro beku di tempat → begitu
+ * overlay hilang, video meloncat maju ~1 detik dan terlihat mundur
+ * dari frame sebelumnya. Hero yang diam dulu di frame yang sama
+ * membuat dissolve cuma crossfade gambar yang sama, lalu potongannya
+ * frame-exact: tidak ada frame yang lompat sama sekali.
  */
 
 // Cut point video ada di 3.958s (scene change). Countdown dibuat
@@ -28,15 +44,17 @@ const FADE_MS = 760;
 // recalc besar akibat class `intro-done` sebelum animasi mulai,
 // supaya frame beratnya jatuh saat overlay masih diam.
 const HANDOFF_GAP_MS = 64;
-// Jeda kedua: memberi waktu hero menyelesaikan seek + mulai playback
-// di frame yang sama dengan video intro, selagi overlay masih opaque.
+// Jeda kedua: memberi waktu hero menyelesaikan seek dan mem-paint
+// frame pertama di posisi itu, selagi overlay masih 100% opaque.
+// Kalau urutannya dibalik, dissolve memakai frame hero yang masih
+// basi (rekaman dari detik 0) → lompatan gambar saat transisi.
 const PRE_ROLL_MS = 240;
 // Autoplay diblokir atau video gagal → jangan tahan user lebih dari ini.
 // Ini batas waktu sampai video MULAI main, dihitung dari mount. Kalau
 // frame pertama sudah tampil, timer ini dibatalkan dan hitungan hold
 // penuh dimulai — tanpa itu, timer ini selalu duluan dan intro terpotong
 // di detik ke-2.4.
-const MAX_WAIT_MS = 2400;
+const MAX_WAIT_MS = 1500;
 
 export default function IntroScreen() {
   const rootRef = useRef(null);
@@ -44,6 +62,13 @@ export default function IntroScreen() {
   // Dipakai handler onError di JSX, yang tidak punya akses ke closure effect.
   const leaveRef = useRef(() => {});
   const [done, setDone] = useState(false);
+
+  // Overlay sudah copot dari DOM → video hero boleh mulai dari frame
+  // yang dipegangnya. Dispatch lewat effect (setelah commit), bukan
+  // timer, supaya tidak meleset satu frame dari render.
+  useEffect(() => {
+    if (done) window.dispatchEvent(new Event("intro:reveal"));
+  }, [done]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -69,10 +94,8 @@ export default function IntroScreen() {
       // bukan di frame saat overlay sedang fade.
       document.documentElement.classList.add("intro-done");
 
-      // Hero menyiapkan videonya dulu (seek ke frame terakhir + mulai
-      // main) selagi overlay masih sepenuhnya opaque. Kalau urutannya
-      // dibalik, video hero masih di frame 0 saat overlay sudah memudar
-      // → lompatan gambar di tengah transisi.
+      // Hero menyiapkan videonya dulu (seek ke frame terakhir, lalu tahan
+      // di sana — BELUM play) selagi overlay masih sepenuhnya opaque.
       timers.push(
         window.setTimeout(() => {
           if (cancelled) return;
@@ -83,9 +106,10 @@ export default function IntroScreen() {
         }, HANDOFF_GAP_MS)
       );
 
-      // Baru setelah hero siap: fade overlay dan animasi UI mulai
-      // bersamaan. Dua video isinya sama, jadi yang terlihat adalah
-      // crossfade ke hero yang sedang naik — satu gerakan tunggal.
+      // Baru setelah hero pegang frame yang benar: fade overlay dan
+      // animasi UI mulai bersamaan. Dua video menampilkan frame yang
+      // sama, jadi yang terlihat adalah crossfade ke hero yang sedang
+      // naik — satu gerakan tunggal.
       timers.push(
         window.setTimeout(() => {
           if (cancelled) return;
@@ -94,8 +118,9 @@ export default function IntroScreen() {
         }, HANDOFF_GAP_MS + PRE_ROLL_MS)
       );
 
-      // Copot overlay setelah fade selesai, saat tidak ada apa pun
-      // yang bergerak lagi.
+      // Copot overlay setelah fade selesai, saat tidak ada apa pun yang
+      // bergerak lagi. Video hero baru jalan setelah commit ini, lewat
+      // event `intro:reveal` di effect atas.
       timers.push(
         window.setTimeout(
           () => setDone(true),

@@ -10,10 +10,22 @@ export default function Hero() {
   // diputar bersamaan, browser.decode() dua kali untuk file yang sama →
   // frame dropped dan videonya sendiri yang terasa tersendat.
   //
-  // Karena itu video hero TIDAK autoplay: ia hanya buffering (preload),
-  // lalu mulai main setelah `intro:done`, dengan currentTime disinkronkan
-  // ke frame terakhir intro supaya transisinya nyambung, tidak melompat
-  // balik ke detik 0.
+  // Karena itu video hero TIDAK autoplay dan tidak main selama intro.
+  // Urutannya (lihat IntroScreen):
+  //   1. `intro:prepare` → hero MENYEEK ke frame terakhir intro, lalu diam.
+  //      Overlay masih opaque, jadi proses seek/paint terjadi di belakang
+  //      layar — saat terlihat nanti, frame yang benar sudah terpaint.
+  //   2. `intro:reveal` → overlay sudah hilang dari DOM, baru `play()`.
+  //      Playback mulai dari frame yang sejak tadi dipegang, jadi potongannya
+  //      frame-exact: video tidak mundur maupun maju.
+  //
+  // PENTING: `intro:done` TIDAK boleh menyalakan video di sini. Event itu
+  // artinya "UI boleh muncul", dan ia juga dipakai jaring pengaman di
+  // layout.jsx. Dulu jaring itu tembus di detik ke-4 — mendahului hold
+  // intro (3960ms, baru mulai begitu frame pertama benar-benar tampil,
+  // jadi berakhir sekitar detik ke-4.0-an) — dan hero yang dinyalakan dari
+  // sana main dari detik 0 sementara intro masih beku di detik 4: video
+  // mundur ~1-2 detik tepat saat UI baru muncul.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -22,43 +34,92 @@ export default function Hero() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
 
-    let started = false;
+    let armed = false; // frame intro sudah dipegang (seek selesai)
+    let syncing = false; // seek sedang berjalan
+    let started = false; // playback sudah / sedang berjalan
+    let detachSeek = () => {};
+
+    // Seek ke frame terakhir intro, lalu video tetap DIAM di sana sampai
+    // `intro:reveal`. Semua pekerjaan berat selesai di belakang overlay
+    // yang masih opaque, jadi tidak ada apa pun yang terlihat melompat.
+    const arm = () => {
+      if (armed || syncing || started) return;
+
+      const t = Number(document.documentElement.dataset.introTime);
+      // Tidak ada intro yang jalan (mis. navigasi balik ke beranda, atau
+      // intro gagal total) → tidak ada posisi untuk disinkronkan.
+      if (!Number.isFinite(t) || t <= 0.05) {
+        armed = true;
+        return;
+      }
+      // Sudah di posisi yang benar → frame itu sudah terpaint, tidak
+      // perlu seek (seek yang tidak perlu tetap bisa berkedip).
+      if (Math.abs(v.currentTime - t) <= 0.02) {
+        armed = true;
+        return;
+      }
+
+      syncing = true;
+      const onSeeked = () => {
+        syncing = false;
+        armed = true;
+        detachSeek();
+      };
+      detachSeek = () => v.removeEventListener("seeked", onSeeked);
+      v.addEventListener("seeked", onSeeked);
+      try {
+        v.currentTime = t;
+      } catch {
+        // Seek ditolak browser: playback tetap jalan, hanya tidak presisi.
+        onSeeked();
+      }
+    };
+
     const start = () => {
       if (started) return;
       started = true;
-
-      // Lanjut dari frame terakhir intro, bukan dari detik 0.
-      const t = Number(document.documentElement.dataset.introTime);
-      if (Number.isFinite(t) && t > 0.05 && Math.abs(v.currentTime - t) > 0.2) {
-        try {
-          v.currentTime = t;
-        } catch {
-          /* seek ditolak browser — playback dari awal tetap jalan */
-        }
-      }
+      detachSeek();
       const p = v.play();
       if (p?.catch) p.catch(() => {});
     };
 
-    // `intro:prepare` dikirim lebih dulu, selagi overlay intro masih
-    // opaque: video hero selesai bersiap sebelum fade dimulai.
-    // `intro:done` hanya cadangan (mis. `intro:prepare` kelewat).
-    const onReady = () => {
-      // Data sudah ter-buffer (preload=auto), jadi playback mulai instan.
-      if (v.readyState >= 2) start();
-      else v.addEventListener("loadeddata", start, { once: true });
+    // `intro:prepare`: buffer sudah siap (preload=auto), jadi seek bisa
+    // langsung jalan. Kalau belum, tunggu data pertama — bukan sampai
+    // overlay hilang, karena itu memunculkan frame basi saat transisi.
+    const onPrepare = () => {
+      if (v.readyState >= 1) arm();
+      else v.addEventListener("loadedmetadata", arm, { once: true });
     };
 
-    window.addEventListener("intro:prepare", onReady);
-    window.addEventListener("intro:done", onReady);
+    // `intro:reveal`: overlay sudah dicopot → hero lanjut dari frame yang
+    // dipegang. Kalau `intro:prepare` somehow kelewat, arm() di sini
+    // tetap benar karena `introTime` masih tersimpan di <html>.
+    const onReveal = () => {
+      if (!armed) arm();
+      start();
+    };
 
-    // Intro sudah lewat? (mis. navigasi balik ke beranda.)
-    if (document.documentElement.classList.contains("intro-done")) onReady();
+    window.addEventListener("intro:prepare", onPrepare);
+    window.addEventListener("intro:reveal", onReveal);
+    // Jaring pengaman di layout.jsx: intro tidak pernah jalan sama sekali.
+    // Tidak ada frame untuk disinkronkan, jadi video main dari nol.
+    window.addEventListener("intro:failed", onReveal);
+
+    // Intro sudah lewat sebelum hero mount (mis. navigasi balik ke
+    // beranda)? Tidak ada overlay yang menutup → aman langsung main.
+    if (
+      document.documentElement.classList.contains("intro-done") &&
+      !document.querySelector(".intro-screen")
+    ) {
+      start();
+    }
 
     return () => {
-      v.removeEventListener("loadeddata", start);
-      window.removeEventListener("intro:prepare", onReady);
-      window.removeEventListener("intro:done", onReady);
+      detachSeek();
+      v.removeEventListener("loadedmetadata", arm);
+      window.removeEventListener("intro:prepare", onPrepare);
+      window.removeEventListener("intro:reveal", onReveal);
+      window.removeEventListener("intro:failed", onReveal);
     };
   }, []);
 
