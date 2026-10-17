@@ -1,6 +1,6 @@
 # BYTE//BREW — Coffee Shop Website
 
-> **Theme:** Startup agency / Gen-Z builder culture
+> **Theme:** Website kedai kopi — visual dark + neon lime, tipografi brutalis
 > **Tagline:** `LOW-LEVEL SYSTEMS. HIGH CAFFEINE.`
 > **Stack:** Next.js (App Router) + Tailwind CSS
 > **Status:** Disetujui, siap implementasi
@@ -14,7 +14,7 @@
 |---|---|
 | Nama | **BYTE//BREW** |
 | Tagline | Low-level systems. High caffeine. |
-| Copywriting | English tech (`we ship caffeine, not code`) |
+| Copywriting | Bahasa Indonesia, sentuhan tech (`we ship caffeine, not code`) |
 | Palet | Dark `#0A0A0A` + neon lime `#C6F24E` |
 | Struktur | Multi-page |
 | Data menu | Fiktif (harga realistis 15k–45k) |
@@ -26,9 +26,9 @@
 
 | # | Nama | Tagline | Alasan |
 |---|---|---|---|
-| 1 | **BYTE//BREW** ✅ | Low-level, high caffeine | Vibe agency-tech paling kuat,Fsalate untuk logo pixel/mono |
-| 2 | Bootstrap Brew | Ship your day, one cup at a time. | Kuat secara startup, mudah diingat |
-| 3 | Sprint Latte | Finish fast. Sip slow. | Playful, sangat Gen-Z |
+| 1 | **BYTE//BREW** ✅ | Low-level, high caffeine | Paling kuat dengan visual mono/pixel, mudah 기억 |
+| 2 | Bootstrap Brew | Ship your day, one cup at a time. | Windsor dan elegan, tapi kurang mudah diingat |
+| 3 | Sprint Latte | Finish fast. Sip slow. | Lucu, tapi rasa seperti menu bukan nama kedai |
 | 4 | Steep & Ship | Brew it. Ship it. | Anti-mainstream, rebellious |
 | 5 | Kopi Pivot | Change the blend, not the grind. | Bagus untuk menu seasonal |
 | 6 | Kopi MVP | Minimum blend, maximum impact. | Lucu, pendek untuk logo |

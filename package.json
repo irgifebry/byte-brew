@@ -2,7 +2,7 @@
   "name": "byte-brew",
   "version": "1.0.0",
   "private": true,
-  "description": "BYTE//BREW — specialty coffee, startup agency aesthetic",
+  "description": "BYTE//BREW — website kedai kopi spesialti. Visual dark + neon lime, tipografi brutalis.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -2,8 +2,9 @@
 
 > Low-level systems. High caffeine.
 
-Website coffee shop bertema **startup agency / Gen-Z builder culture**.
-Dark `#0A0A0A` + neon lime `#C6F24E`, tipografi brutalis, motion berbasis scroll.
+Website untuk kedai kopi spesialti **BYTE//BREW**.
+Tema visualnya **dark `#0A0A0A` + neon lime `#C6F24E`**, tipografi brutalis,
+motion berbasis scroll.
 
 Rancangan lengkap ada di [`PLAN.md`](./PLAN.md).
 
