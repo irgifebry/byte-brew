@@ -3,10 +3,8 @@
 import { formatPrice } from "@/data/menu";
 
 const TAG_STYLE = {
-  "best seller": "bg-lime text-void",
-  cheapest: "bg-cream text-void",
-  popular: "bg-lime text-void",
-  new: "border border-lime text-lime",
+  "Paling laris": "bg-lime text-void",
+  Baru: "border border-lime text-lime",
 };
 
 /**

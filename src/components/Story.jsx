@@ -7,7 +7,7 @@ const STATS = [
   { value: 48, suffix: "K", label: "Cangkir terjual", index: "01" },
   { value: 4.9, suffix: "★", label: "Rating rata-rata", index: "02", decimals: 1 },
   { value: 3, suffix: " tahun", label: "Sudah berjalan", index: "03" },
-  { value: 12, suffix: "", label: "Varian kopi", index: "04" },
+  { value: 11, suffix: "", label: "Varian kopi", index: "04" },
 ];
 
 /** Angka berhitung naik saat masuk viewport. */
@@ -100,8 +100,8 @@ export default function Story() {
                   tidak kami jual.
                 </p>
                 <p>
-                  Kami roasting dalam jumlah kecil, menyeduh langsung di tempat,
-                  dan selalu tripping. Tidak ada istilah yang
+                  Kami roasting dalam jumlah kecil, menggiling biji
+                  setiap kali pesanan masuk. Tidak ada istilah yang
                   membingungkan saat memesan.
                 </p>
               </div>

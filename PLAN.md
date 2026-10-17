@@ -1,7 +1,7 @@
 # BYTE//BREW — Coffee Shop Website
 
 > **Theme:** Website kedai kopi — visual dark + neon lime, tipografi brutalis
-> **Tagline:** `LOW-LEVEL SYSTEMS. HIGH CAFFEINE.`
+> **Tagline:** `Kopi pilihan, diroast setiap hari.`
 > **Stack:** Next.js (App Router) + Tailwind CSS
 > **Status:** Disetujui, siap implementasi
 > **Hero footage:** `footage_hero.mp4` — dokumenter asli kedai BYTE//BREW
@@ -13,8 +13,8 @@
 | Aspek | Pilihan |
 |---|---|
 | Nama | **BYTE//BREW** |
-| Tagline | Low-level systems. High caffeine. |
-| Copywriting | Bahasa Indonesia, sentuhan tech (`we ship caffeine, not code`) |
+| Tagline | Kopi pilihan, diroast setiap hari. |
+| Copywriting | Bahasa Indonesia, lugas & tanpa jargon |
 | Palet | Dark `#0A0A0A` + neon lime `#C6F24E` |
 | Struktur | Multi-page |
 | Data menu | Fiktif (harga realistis 15k–45k) |
@@ -22,16 +22,11 @@
 | Interaksi khas | Brutalis retro confirm dialog |
 | Framework | Next.js App Router + Tailwind CSS |
 
-### Nama & Alternatif yang Pertimbangkan
+### Nama yang dipakai
 
-| # | Nama | Tagline | Alasan |
-|---|---|---|---|
-| 1 | **BYTE//BREW** ✅ | Low-level, high caffeine | Paling kuat dengan visual mono/pixel, mudah 기억 |
-| 2 | Bootstrap Brew | Ship your day, one cup at a time. | Windsor dan elegan, tapi kurang mudah diingat |
-| 3 | Sprint Latte | Finish fast. Sip slow. | Lucu, tapi rasa seperti menu bukan nama kedai |
-| 4 | Steep & Ship | Brew it. Ship it. | Anti-mainstream, rebellious |
-| 5 | Kopi Pivot | Change the blend, not the grind. | Bagus untuk menu seasonal |
-| 6 | Kopi MVP | Minimum blend, maximum impact. | Lucu, pendek untuk logo |
+| Nama | Tagline | Alasan |
+|---|---|---|
+| **BYTE//BREW** | Kopi pilihan, diroast setiap hari. | Nama tetap. Tetap terbaca sebagai kedai kopi, visual mono-nya nyambung dengan desain teknis. |
 
 ---
 
@@ -48,7 +43,7 @@ Website Coffee Shop/
 ├── public/
 │   ├── footage_hero.mp4        # dipindah dari root
 │   ├── hero-poster.jpg         # frame t=1s dari video
-│   ├── still-beans.jpg         # frame t=1s → section manifesto
+│   ├── still-beans.jpg         # frame t=1s → section cerita
 │   ├── still-tamping.jpg       # frame t=4s → about
 │   └── still-pour.jpg          # frame t=7s → about/gallery
 ├── src/
@@ -64,7 +59,7 @@ Website Coffee Shop/
 │   │   ├── Footer.jsx
 │   │   ├── Hero.jsx                # video bg + headline + CTAs
 │   │   ├── Ticker.jsx              # marquee infinite
-│   │   ├── Manifesto.jsx
+│   │   ├── Story.jsx
 │   │   ├── MenuCard.jsx            # produk + harga
 │   │   ├── SpaceGallery.jsx
 │   │   ├── Testimonials.jsx
@@ -82,24 +77,24 @@ Website Coffee Shop/
 
 | # | Section | Detail |
 |---|---|---|
-| 1 | **Hero** | `footage_hero.mp4` loop muted autoplay (dokumenter kedai), overlay gradient + vignette, headline `LOW-LEVEL SYSTEMS. HIGH CAFFEINE.`, subcopy, CTA `view menu` / `book a table` |
-| 2 | **Ticker** | Marquee infinite: `SPECIALTY GRIND ☕ SHIP DAILY ☕ OPEN LATE ☕` |
-| 3 | **Manifesto** | "We don't run a café. We ship caffeine." + stat counter (48K cups, 4.9★, 3 yrs, 12 blends) + still frame dari footage |
-| 4 | **Featured menu** | 4 kartu produk |
-| 5 | **Space gallery** | 4 foto Unsplash + caption |
-| 6 | **Testimoni** | 3 quote pendek |
-| 7 | **CTA banner** | "your next sprint starts here" |
+| 1 | **Hero** | `footage_hero.mp4` loop muted autoplay (dokumenter kedai), overlay gradient + vignette, headline `KOPI PILIHAN, DIROAST SETIAP HARI`, subcopy, CTA `lihat menu` / `pesan meja` |
+| 2 | **Ticker** | Marquee infinite: `BIJI PILIHAN // ROASTING SETIAP HARI // BUKA SAMPAI MALAM` |
+| 3 | **Tentang kami** | "Kopi pilihan, di-roast setiap hari." + stat counter (48K cangkir, 4.9★, 3 tahun, 11 varian) + still frame dari footage |
+| 4 | **Menu unggulan** | 4 kartu produk |
+| 5 | **Tempat kami** | 4 foto Unsplash + caption |
+| 6 | **Reviews** | 3 quote pendek |
+| 7 | **CTA banner** | "Pesan meja minggu ini" |
 
 ### `/menu`
 
-- 3 kategori: **Signature** / **Cold Brew** / **Not-Coffee**
+- 3 kategori: **Kopi Panas** / **Cold Brew** / **Non-Kopi**
 - 11 item fiktif lengkap dengan harga
-- Tombol `add to cart` (visual only) + `reserve`
+- Tombol `+ tambah` (visual only)
 
 ### `/about`
 
-- Story Bytes & Brew
-- **VALUES** — 3 kartu: `No shortcuts` / `Ship fresh` / `Build community`
+- Cerita BYTE//BREW
+- **Prinsip kerja** — 3 kartu: `Tanpa jalan pintas` / `Selalu segar` / `Tempat berkumpul`
 - Galeri space — still frame dari footage kedai (tamping espresso, pour latte)
 
 ### `/contact`
@@ -107,7 +102,7 @@ Website Coffee Shop/
 - Alamat fiktif (Jakarta)
 - Jam buka
 - Peta OpenStreetMap embed (Google Maps `output=embed` diblokir framing) + CSS filter tema gelap
-- Form (nama / email / date) yang memicu **RetroDialog**
+- Form (nama / email / tanggal) yang memicu **RetroDialog**
 
 ---
 
@@ -199,38 +194,41 @@ Website Coffee Shop/
 5. **Audio** — Wajib `muted` + `playsInline` agar autoplay tidak diblokir browser mobile.
 6. **Poster** — Frame `t=1s` dipakai sebagai `poster` agar tidak ada black flash sebelum video siap.
 7. **Reduced motion** — Hormati `prefers-reduced-motion`: video tidak auto-loop, tampil poster statis.
-8. **Penggunaan ulang** — Shot yang sama dipotong jadi still frame untuk section **Manifesto** dan **About** (konsistensi visual antar section).
+8. **Penggunaan ulang** — Shot yang sama dipotong jadi still frame untuk section **Story** dan **About** (konsistensi visual antar section).
 
 > Karena ini footage asli kedai, halaman **About** memakai frame-nya sebagai bukti "ini tempat kami, bukan mockup".
 
 ---
 
-## 6. Data Menu Fiktif (draft)
+## 6. Data Menu (draft)
 
-### Signature
+Nama menu memakai istilah kopi yang lazim, bukan jargon produk.
+
+### Kopi Panas
 | Item | Deskripsi | Harga |
 |---|---|---|
-| `NULL//POUR` | Single origin, dark chocolate finish | 28k |
-| `BYTE ESPRESSO` | Double shot, no compromise | 22k |
-| `FLAT WHITE v2` | Microfoam, 180ml, tight pour | 32k |
-| `FUNCTION CURLING` | Cortado, oat milk | 30k |
+| `ESPRESSO` | Dua shot, 18 g masuk, 40 g keluar, plus satu biskuit | 22k |
+| `SINGLE ORIGIN` | Biji Sumatra, cokelat gelap, sedikit manis | 28k |
+| `FLAT WHITE` | Susu 180 ml, busa rapat, dituang perlahan | 32k |
+| `CORTADO` | Espresso dicampur susu oat, ukuran kecil | 30k |
 
 ### Cold Brew
 | Item | Deskripsi | Harga |
 |---|---|---|
-| `STATIC BREW` | 18-hour steep, nitro finish | 35k |
-| `CACHE HIT` | Cold brew + vanilla, iced | 38k |
-| `MERGE CONFLICT` | Cold brew + orange peel | 40k |
+| `COLD BREW` | Direndapkan 18 jam di atas es batu | 35k |
+| `VANILLA COLD BREW` | Cold brew + sirup vanila Madagaskar | 38k |
+| `ORANGE COLD BREW` | Cold brew + kulit jeruk + tonic | 40k |
 
-### Not-Coffee
+### Non-Kopi
 | Item | Deskripsi | Harga |
 |---|---|---|
-| `RENDER MATCHA` | Ceremonial grade, oat milk | 38k |
-| `DEBUG COCOA` | 70% dark, sea salt | 34k |
-| `PLACEHOLDER TEA` | Jasmine green, yuzu | 30k |
-| `HALF-LOAD CHAI` | Cardamom, house masala | 36k |
+| `MATCHA LATTE` | Matcha kelas premium + susu oat | 38k |
+| `HOT CHOCOLATE` | Cokelat 70% + garam laut + susu hangat | 34k |
+| `JASMINE TEA` | Teh hijau melati + yuzu + madu | 30k |
+| `CHAI LATTE` | Susu + cardamom + campuran sendiri | 36k |
 
-> Struktur final disimpan di `src/data/menu.js` supaya gampang diganti.
+> Struktur final di `src/data/menu.js`. Semua foto produk sudah dicocokkan
+> satu per satu dengan produknya.
 
 ---
 
@@ -263,6 +261,49 @@ Website Coffee Shop/
 5. **Foto produk tidak cocok** — 6 item salah, termasuk 3 item yang share 1 foto. Semua diganti & diverifikasi ulang.
 6. **Label gallery tidak cocok** — "The long bench" memakai foto tanaman/jendela.
 
+## 7.2 Keputusan Copywriting
+
+Copywriting awal memakai metafora produk (ship, build, deploy, cache).
+Atasan berubah: **semua jargon dibuang**, nama **BYTE//BREW** tetap.
+
+Aturan yang dipakai:
+
+1. **Nama kedai tetap.** `BYTE//BREW` bukan gimmick — itu nama brand.
+2. **Nama menu pakai istilah kopi yang lazim.** Bukan nama produk.
+3. **Semua teks antarmuka Bahasa Indonesia.** Tidak ada campuran Inggris–Indonesia.
+4. **Istilah industri yang tetap dipakai** karena wajar di dunia kopi:
+   *single origin, direct trade, cold brew, espresso, tamping, cupping, open bar*.
+5. **Angka harus jujur.** Statistik "12 varian kopi" dikoreksi jadi **11** agar
+   sama dengan jumlah menu sebenarnya.
+
+### Contoh penggantian
+
+| Sebelum | Sesudah |
+|---|---|
+| Low-level systems. High caffeine. | Kopi pilihan, diroast setiap hari. |
+| `NULL//POUR`, `CACHE HIT`, `MERGE CONFLICT` | `SINGLE ORIGIN`, `VANILLA COLD BREW`, `ORANGE COLD BREW` |
+| `DEBUG COCOA`, `HALF-LOAD CHAI`, `PLACEHOLDER TEA` | `HOT CHOCOLATE`, `CHAI LATTE`, `JASMINE TEA` |
+| We don't run a café. We ship caffeine. | Kopi pilihan, di-roast setiap hari. |
+| `+ Add to order` | `+ Tambah` |
+| Book a table | Pesan meja |
+| Your next sprint starts here | Pesan meja minggu ini |
+| 04 — Featured builds | 04 — Menu unggulan |
+| 06 — Field reports | 06 — Reviews |
+| SYSTEM ONLINE | Buka setiap hari |
+
+### Kesalahan yang tertangkap saat audit
+
+Audit dengan mengekstrak seluruh teks yang tampil ke user (bukan sekadar
+mencari kata kunci) menemukan beberapa kalimat rusak yang tidak terlihat
+dari diff biasa:
+
+- `KOPY PILIHAN` &rarr; `KOPI PILIHAN`
+- `rasaunya meleset` &rarr; `rasanya meleset`
+- `selalu tripping` &rarr; kalimat yang masuk akal
+- `nggak bikinDegregang` (spasi hilang)
+- `coba지금.` (baris duplikat tertinggal)
+- Subcopy campur bahasa: `selalu served hangat` &rarr; `selalu disajikan hangat`
+
 ## 8. Checklist Implementasi
 
 - [x] Init Next.js + Tailwind, config project
@@ -273,7 +314,7 @@ Website Coffee Shop/
 - [x] `Navbar` + `Footer` + layout wiring
 - [x] `Hero` dengan video background
 - [x] `Ticker` marquee
-- [x] `Manifesto` + stat counter
+- [x] `Story` + stat counter
 - [x] `MenuCard` + featured section
 - [x] `SpaceGallery`
 - [x] `Testimonials`

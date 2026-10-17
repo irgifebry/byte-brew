@@ -1,9 +1,9 @@
 # BYTE//BREW
 
-> Low-level systems. High caffeine.
+> Kopi pilihan, diroast setiap hari.
 
 Website untuk kedai kopi spesialti **BYTE//BREW**.
-Tema visualnya **dark `#0A0A0A` + neon lime `#C6F24E`**, tipografi brutalis,
+Tema visualnya **dark `#0A0A0A` + neon lime `#C6F24E`**, tipografi bold,
 motion berbasis scroll.
 
 Rancangan lengkap ada di [`PLAN.md`](./PLAN.md).
@@ -32,9 +32,9 @@ Butuh **Node 18+** (dibangun & dites di Node 26).
 
 | Route | Isi |
 |---|---|
-| `/` | Hero (video), ticker, manifesto + statistik, featured menu, galeri, testimoni, CTA |
+| `/` | Hero (video), ticker, cerita + statistik, menu unggulan, galeri, reviews, CTA |
 | `/menu` | 11 item, 3 kategori + filter tab |
-| `/about` | Story, values, changelog |
+| `/about` | Cerita, prinsip kerja, sejarah |
 | `/contact` | Alamat, jam buka, form booking, peta |
 
 ---
@@ -52,7 +52,7 @@ src/
 │   └── contact/
 │       ├── page.jsx        # server — hanya metadata
 │       └── ContactClient.jsx  # client — form + peta
-├── components/             # Hero, Ticker, Manifesto, MenuCard,
+├── components/             # Hero, Ticker, Story, MenuCard,
 │                           # SpaceGallery, Testimonials, CtaBanner,
 │                           # Navbar, Footer, RetroDialog, Reveal
 └── data/menu.js            # ← GANTI DATA MENU DI SINI
@@ -70,7 +70,7 @@ src/
 | **Link sosial** | `src/data/menu.js` → `INFO.socials` |
 | **Foto produk & galeri** | `src/data/menu.js` → `img`, `src/components/SpaceGallery.jsx` |
 
-Belum ada backend. Tombol *Add to order* dan *Submit booking* sengaja
+Belum ada backend. Tombol *Tambah* dan *Kirim pesanan* sengaja
 menampilkan dialog retro alih-alih mengirim data.
 
 ---

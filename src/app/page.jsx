@@ -19,7 +19,7 @@ const TICKER = [
   "Buka sampai malam",
   "Direct trade",
   "Batch kecil",
-  "Boleh bawa laptop",
+  "Ruang duduk lega",
 ];
 
 export default function Home() {

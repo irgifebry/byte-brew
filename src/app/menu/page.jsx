@@ -6,7 +6,7 @@ import RetroDialog from "@/components/RetroDialog";
 import Reveal from "@/components/Reveal";
 import { CATEGORIES, ITEMS, formatPrice } from "@/data/menu";
 
-const TABS = [{ id: "all", label: "All", index: "00" }, ...CATEGORIES.map((c) => ({
+const TABS = [{ id: "all", label: "Semua", index: "00" }, ...CATEGORIES.map((c) => ({
   id: c.id,
   label: c.label,
   index: c.index,
@@ -41,10 +41,10 @@ export default function MenuPage() {
         <div className="mx-auto max-w-[1400px] px-5 md:px-8">
           <p className="eyebrow flex items-center gap-3 text-lime">
             <span className="inline-block h-1.5 w-1.5 bg-lime" />
-            [02] — Daftar menu
+            [02] — Katalog
           </p>
           <h1 className="display mt-5 text-[clamp(2.5rem,9vw,7.5rem)]">
-            THE MENU<span className="cursor-block" />
+            DAFTAR MENU<span className="cursor-block" />
           </h1>
           <p className="mt-6 max-w-md text-sm leading-relaxed text-cream/60">
             {ITEMS.length} varian tersedia. Harga dalam ribuan rupiah,

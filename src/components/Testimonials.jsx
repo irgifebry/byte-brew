@@ -3,23 +3,23 @@ import Reveal from "./Reveal";
 const QUOTES = [
   {
     quote:
-      "Tempat pertama yang minsumnya nggak bikin saya merasa腾飞. Oraangnya di sini semua lagi ngerjain sesuatu.",
+      "Tempat pertama yang minsumnya benar-benar enak, bukan cuma enak dilihat.",
     name: "Raka P.",
-    role: "Frontend dev",
+    role: "Pelanggan tetap",
     index: "01",
   },
   {
     quote:
       "Cold brew-nya beneran cold brew, bukan cokelat dingin. Jarang ada kedai yang begini.",
     name: "Nadia S.",
-    role: "Product designer",
+    role: "Designer",
     index: "02",
   },
   {
     quote:
-      "Booking jam 8 pagi, duduk 6 jam, pulang dengan ide yang akhirnya ketemu. Sangat hemat waktu.",
+      "Booking jam 8 pagi, tempatnya tenang, pulang dengan kepala lebih ringan.",
     name: "Dimas A.",
-    role: "Founder",
+    role: "Guru",
     index: "03",
   },
 ];

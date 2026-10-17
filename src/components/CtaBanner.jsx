@@ -15,7 +15,7 @@ export default function CtaBanner() {
 
         <Reveal from="up" delay={80}>
           <h2 className="display mt-5 max-w-[16ch] text-[clamp(2.25rem,8vw,7rem)] text-void">
-            BOOK A TABLE
+            PESAN MEJA
             <br />
             THIS WEEK<span className="cursor-block bg-void" />
           </h2>
@@ -27,13 +27,13 @@ export default function CtaBanner() {
               href="/contact"
               className="border-2 border-void bg-void px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-lime uppercase transition-transform hover:-translate-y-0.5 active:translate-y-0"
             >
-              Book a table →
+              Pesan meja →
             </Link>
             <Link
               href="/menu"
               className="border-2 border-void px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-void uppercase transition-colors hover:bg-void hover:text-lime"
             >
-              See the menu
+              Lihat menunya
             </Link>
           </div>
         </Reveal>

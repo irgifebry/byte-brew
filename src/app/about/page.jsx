@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 export const metadata = {
   title: "About",
   description:
-    "Cerita BYTE//BREW: bagaimana kedai kopi 4 meja di Senopati tumbuh jadi tempat kerja favorit banyak orang.",
+    "Cerita BYTE//BREW: bagaimana kedai kopi 4 meja di Senopati tumbuh jadi tempat favorit banyak orang.",
 };
 
 const VALUES = [
@@ -23,8 +23,8 @@ const VALUES = [
   {
     index: "03",
     title: "Tempat berkumpul",
-    body: "Tempat ini tumbuh bersama orang yang setiap hari datang ke sini. Open bar tiap Jumat malam, sesi cupping tiap dua minggu, dan chai gratis refill buat yang sedang dikejar tenggat.",
-    points: ["Cupping tiap 2 minggu", "Open bar tiap Jumat", "Chai refill gratis"],
+    body: "Tempat ini tumbuh bersama orang yang setiap hari datang ke sini. Ajang kopi tiap Jumat malam, sesi cupping tiap dua minggu, dan chai gratis refill buat yang sedang dikejar tenggat.",
+    points: ["Cupping tiap 2 minggu", "Ajang kopi tiap Jumat", "Chai refill gratis"],
   },
 ];
 
@@ -32,7 +32,7 @@ const TIMELINE = [
   { year: "2023", text: "Buka pertama. 4 meja, satu grinder, dan satu mesin espresso yang suaranya paling keras di ruangan." },
   { year: "2024", text: "Tambah cold brew dan mesin kedua. Meja juga bertambah menjadi 10 buah." },
   { year: "2025", text: "Mulai belanja langsung ke dua kebun di Etiopia dan satu di Sumatra." },
-  { year: "2026", text: "Sekarang 14 meja, open bar tiap Jumat, dan tidak ada rencana membuka cabang." },
+  { year: "2026", text: "Sekarang sudah 14 meja. Setiap Jumat malam kita buka bar untuk semua orang." },
 ];
 
 export default function AboutPage() {
@@ -56,7 +56,7 @@ export default function AboutPage() {
             [03] — Tentang kami
           </p>
           <h1 className="display mt-5 max-w-[15ch] text-[clamp(2.5rem,9vw,7.5rem)]">
-            SELALU FRESH,
+            BARU DIROAST,
             <br />
             <span className="text-lime">SELALU HANGAT</span>
           </h1>
@@ -75,7 +75,7 @@ export default function AboutPage() {
                   className="aspect-4/5 w-full object-cover"
                 />
                 <figcaption className="absolute inset-x-0 bottom-0 border-t border-line bg-void/85 px-4 py-3 font-mono text-[10px] tracking-wider text-mute uppercase backdrop-blur-sm">
-                  [Fig.01] — 18g in, tamping dengan tenang
+                  [Gambar.01] — Tamping, 18 gram masuk
                 </figcaption>
               </figure>
             </Reveal>
@@ -112,7 +112,6 @@ export default function AboutPage() {
                   Dari situ kami belajar satu hal: kopi yang enak
                   harus bisa enak setiap hari. Itu yang kami
                   coba sampai sekarang.
-                  coba지금.
                 </p>
               </div>
             </Reveal>

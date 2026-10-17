@@ -41,7 +41,7 @@ export const ITEMS = [
     category: "signature",
     desc: "Biji Sumatra, rasa cokelat gelap dengan sedikit manis.",
     price: 28,
-    tag: "best seller",
+    tag: "Paling laris",
     img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=900&q=80",
   },
   {
@@ -70,7 +70,7 @@ export const ITEMS = [
     category: "cold",
     desc: "Direndapkan 18 jam, dituang di atas es batu.",
     price: 35,
-    tag: "best seller",
+    tag: "Paling laris",
     img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80",
   },
   {
@@ -88,7 +88,7 @@ export const ITEMS = [
     category: "cold",
     desc: "Cold brew dengan kulit jeruk dan tonic. Segar dan sedikit asam.",
     price: 40,
-    tag: "new",
+    tag: "Baru",
     img: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=80",
   },
 
@@ -143,8 +143,8 @@ export function formatPrice(n) {
 
 export const INFO = {
   name: "BYTE//BREW",
-  tagline: "Kopi pilihan, di-roast setiap hari.",
-  address: "Jl. Compile No. 12, Senopati, Jakarta Selatan",
+  tagline: "Kopi pilihan, diroast setiap hari.",
+  address: "Jl. Senopati No. 12, Jakarta Selatan",
   mapsQuery: "Senopati Jakarta Selatan",
   hours: [
     { day: "Senin – Jumat", time: "07:00 – 22:00" },

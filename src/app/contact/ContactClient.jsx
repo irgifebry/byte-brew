@@ -55,7 +55,7 @@ export default function ContactClient() {
             [04] — Hubungi kami
           </p>
           <h1 className="display mt-5 text-[clamp(2.5rem,9vw,7.5rem)]">
-            BOOK A TABLE<span className="cursor-block" />
+            PESAN MEJA<span className="cursor-block" />
           </h1>
           <p className="mt-6 max-w-md text-sm leading-relaxed text-cream/60">
             Untuk grup di atas 6 orang, mampir dulu atau mention di DM
@@ -83,7 +83,7 @@ export default function ContactClient() {
 
                 <div className="border-l-2 border-line pl-4">
                   <p className="font-mono text-[10px] tracking-widest text-mute uppercase">
-                    Operating hours
+                    Jam buka
                   </p>
                   <ul className="mt-2 space-y-2">
                     {INFO.hours.map((h) => (

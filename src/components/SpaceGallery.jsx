@@ -5,7 +5,7 @@ const SPACES = [
     src: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1400&q=80",
     alt: "Barista menuang air panas ke filter pour-over di brew bar",
     code: "SP.01",
-    label: "Bar brewing",
+    label: "Bar kopi",
     note: "Bisa dilihat langsung.",
     size: "tall",
   },
@@ -14,7 +14,7 @@ const SPACES = [
     alt: "Meja kayu bulat dengan french press dan cangkir di dekat jendela",
     code: "SP.02",
     label: "Meja bersama",
-    note: "8 colokan, tanpa batas waktu.",
+    note: "Pas untuk empat orang.",
     size: "normal",
   },
   {
@@ -22,15 +22,15 @@ const SPACES = [
     alt: "Tiga tangan memegang cangkir kopi bersulang",
     code: "SP.03",
     label: "Pelanggan tetap",
-    note: "Open bar tiap Jumat.",
+    note: "Ajang kopi tiap Jumat.",
     size: "normal",
   },
   {
     src: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1600&q=80",
     alt: "Lampu gantung di interior kedai dengan tulisan CAFE",
     code: "SP.04",
-    label: "Setelah jam kerja",
-    note: "Boleh membawa laptop sampai 21:00.",
+    label: "Menjelang malam",
+    note: "Tetap buka sampai jam 22.00.",
     size: "wide",
   },
 ];
@@ -50,17 +50,17 @@ export default function SpaceGallery() {
             </Reveal>
             <Reveal from="up" delay={80}>
               <h2 className="display mt-5 text-[clamp(2rem,5vw,4.25rem)]">
-                TEMPAT UNTUK
+                TEMPAT DUDUK
                 <br />
-                <span className="text-lime">BEKERJA LAMA</span>
+                <span className="text-lime">SANTAI</span>
               </h2>
             </Reveal>
           </div>
 
           <Reveal from="right" delay={140}>
             <p className="max-w-xs font-mono text-[11px] leading-relaxed text-mute">
-              WiFi tersedia dari jam 7 pagi, dan colokan ada di
-              setiap meja. Tidak ada yang perlu buru-buru.
+              Sudut paling nyaman ada di bar bagian depan,
+              dekat jendela. Sore biasanya lebih ramai.
             </p>
           </Reveal>
         </div>
