@@ -67,6 +67,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  font-family: var(--font-sans);
   /* `clip` (bukan `hidden`) supaya marquee yang lebih lebar dari viewport
      tidak ikut ter-scroll, tapi tetap bisa di-scroll vertikal normal. */
   overflow-x: clip;
