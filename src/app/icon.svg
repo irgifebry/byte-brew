@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    BYTEBREW — favicon / app icon.
+
+    Mark: satu biji kopi, dan lekukannya disusun dari delapan kotak
+    kecil yang sama — eight bits, satu byte. Nama brand = "byte" +
+    "brew", jadi mark ini bercerita soal namanya sendiri, bukan
+    gambar kopi generik.
+
+    Warna diambil dari design token di globals.css:
+      #241b15  espresso  (blok gelap + intro screen)
+      #e09a63  amber-lt  (aksen di latar gelap, 7.2:1 vs espresso)
+
+    Bentuknya sengaja tanpa detail kecil: yang masih terbaca di 16px
+    hanyalah siluet biji + satu garis terang.
+  -->
+  <title>Bytebrew</title>
+
+  <!-- Tile. Sudut membulat supaya tidak terlihat seperti file gambar
+       mentah ketika masih kecil di tab browser. -->
+  <rect width="64" height="64" rx="14" fill="#241b15" />
+
+  <g transform="rotate(-30 32 32)" fill="#e09a63">
+    <ellipse cx="32" cy="32" rx="19" ry="13" />
+
+    <!-- Lekukan biji, dipecah jadi 8 bit. Posisi dan rotasinya dihitung
+         dari sampling kurva Bézier, jadi tiap kotak duduk tepat di
+         lekukan dan ikut miring mengikuti arah lekuk. Pada ukuran kecil
+         jitunya menyatu jadi garis — dan garis tetap bacaannya sama:
+         biji kopi. -->
+    <g fill="#241b15">
+      <rect x="16.55" y="28.22" width="3.1" height="3.1" rx="0.9" transform="rotate(-25.1 18.10 29.77)" />
+      <rect x="20.62" y="27.05" width="3.1" height="3.1" rx="0.9" transform="rotate(-5.7 22.17 28.60)" />
+      <rect x="24.84" y="27.46" width="3.1" height="3.1" rx="0.9" transform="rotate(16.1 26.39 29.01)" />
+      <rect x="28.70" y="29.23" width="3.1" height="3.1" rx="0.9" transform="rotate(32.0 30.25 30.78)" />
+      <rect x="32.20" y="31.67" width="3.1" height="3.1" rx="0.9" transform="rotate(32.0 33.75 33.22)" />
+      <rect x="36.06" y="33.44" width="3.1" height="3.1" rx="0.9" transform="rotate(16.1 37.61 34.99)" />
+      <rect x="40.28" y="33.85" width="3.1" height="3.1" rx="0.9" transform="rotate(-5.7 41.83 35.40)" />
+      <rect x="44.35" y="32.68" width="3.1" height="3.1" rx="0.9" transform="rotate(-25.1 45.90 34.23)" />
+    </g>
+  </g>
+</svg>
