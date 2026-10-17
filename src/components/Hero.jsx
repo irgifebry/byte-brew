@@ -1,65 +1,89 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Hero() {
   const videoRef = useRef(null);
-  const [loaded, setLoaded] = useState(false);
 
-  // Hormati prefers-reduced-motion → jangan autoplay, tapi tetap tampilkan frame pertama.
+  // Hero memakai file video yang sama dengan IntroScreen. Kalau keduanya
+  // diputar bersamaan, browser.decode() dua kali untuk file yang sama →
+  // frame dropped dan videonya sendiri yang terasa tersendat.
   //
-  // PENTING: jangan andalkan event `canplay` saja. Kalau video selesai
-  // di-cache dan `canplay` memicu sebelum React hydration, handler inline
-  // akan terlewat → opacity tetap 0 → hero hitam selamanya.
-  // Karena itu kita cek readyState secara langsung + pasang listener.
+  // Karena itu video hero TIDAK autoplay: ia hanya buffering (preload),
+  // lalu mulai main setelah `intro:done`, dengan currentTime disinkronkan
+  // ke frame terakhir intro supaya transisinya nyambung, tidak melompat
+  // balik ke detik 0.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
 
-    const mark = () => setLoaded(true);
-
+    // Reduced motion: andalkan `poster` untuk frame pertama, jangan putar loop.
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      v.pause();
-      mark();
-      return;
-    }
+    if (reduce) return;
 
-    // Sudah siap sebelum listener terpasang? (cache hit / load cepat)
-    if (v.readyState >= 3) mark();
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
 
-    v.addEventListener("canplay", mark);
-    v.addEventListener("playing", mark);
+      // Lanjut dari frame terakhir intro, bukan dari detik 0.
+      const t = Number(document.documentElement.dataset.introTime);
+      if (Number.isFinite(t) && t > 0.05 && Math.abs(v.currentTime - t) > 0.2) {
+        try {
+          v.currentTime = t;
+        } catch {
+          /* seek ditolak browser — playback dari awal tetap jalan */
+        }
+      }
+      const p = v.play();
+      if (p?.catch) p.catch(() => {});
+    };
 
-    const play = v.play();
-    if (play?.catch) play.catch(() => {});
+    // `intro:prepare` dikirim lebih dulu, selagi overlay intro masih
+    // opaque: video hero selesai bersiap sebelum fade dimulai.
+    // `intro:done` hanya cadangan (mis. `intro:prepare` kelewat).
+    const onReady = () => {
+      // Data sudah ter-buffer (preload=auto), jadi playback mulai instan.
+      if (v.readyState >= 2) start();
+      else v.addEventListener("loadeddata", start, { once: true });
+    };
+
+    window.addEventListener("intro:prepare", onReady);
+    window.addEventListener("intro:done", onReady);
+
+    // Intro sudah lewat? (mis. navigasi balik ke beranda.)
+    if (document.documentElement.classList.contains("intro-done")) onReady();
 
     return () => {
-      v.removeEventListener("canplay", mark);
-      v.removeEventListener("playing", mark);
+      v.removeEventListener("loadeddata", start);
+      window.removeEventListener("intro:prepare", onReady);
+      window.removeEventListener("intro:done", onReady);
     };
   }, []);
 
   return (
     <section className="relative flex min-h-[100svh] items-end shadow-[0_20px_80px_-10px_rgba(36,27,21,0.7)]">
-      {/* ---------- Video layer ---------- */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* ---------- Video layer ----------
+          Tanpa `autoPlay`: playback dikontrol dari effect di atas.
+
+          PENTING: layer ini tidak pernah semi-transparan. Dulu video
+          di-fade dari opacity 0 → 1 bareng fade intro, padahal yang
+          "tembus" dari layer itu adalah background `body` yang krem —
+          makanya di tengah transisi muncul semboyan putih. Sekarang
+          videonya selalu opaque (poster menutupi frame sebelum siap),
+          dan yang bertransisi hanya overlay intro di atasnya.
+          `bg-espresso` jadi jaring pengaman: kalau video gagal load,
+          yang tampil tetap blok gelap, bukan kertas krem. */}
+      <div className="absolute inset-0 overflow-hidden bg-espresso">
         <video
           ref={videoRef}
-          className={`h-full w-full object-cover transition-opacity duration-1000 ${
-            loaded ? "opacity-100" : "opacity-0"
-          }`}
-          autoPlay
+          className="hero-video h-full w-full object-cover"
           muted
           loop
           playsInline
           preload="auto"
           poster="/hero-poster.jpg"
-          onCanPlay={() => setLoaded(true)}
-          onPlaying={() => setLoaded(true)}
-          // Kalau video gagal load, tetap tampilkan poster daripada kotak hitam
-          onError={() => setLoaded(true)}
           aria-hidden="true"
         >
           <source src="/footage_hero.mp4" type="video/mp4" />
@@ -78,41 +102,59 @@ export default function Hero() {
       {/* ---------- Content ----------
           Jangan pakai class `.on-dark` di sini: class itu menyertakan
           `background-color` solid, yang akan menutupi video di belakangnya.
-          Warna teks ditulis eksplisit. */}
+          Warna teks ditulis eksplisit.
+
+          Koreografi masuk (semua mulai bareng fade video intro):
+            1. Video hero zoom pelan 1.07 → 1 di balik dissolve
+            2. Judul: dua baris naik dari balik mask, 40ms lalu 150ms
+            3. Paragraf: 280ms
+            4. Tombol: 380ms lalu 450ms
+            5. Scroll hint: garisnya "menggambar" diri 560ms, teks 600ms
+          Nada naik dari bawah terus-menerus, bukan lima efek terpisah. */}
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 pt-32 pb-14 md:px-8 md:pb-20">
         <h1 className="display mt-5 max-w-[16ch] text-[clamp(2.75rem,9vw,7.5rem)] text-cream">
-          Kopi berkualitas,
-          <br />
-          di-roast setiap hari.
+          <span className="intro-mask" style={{ "--intro-delay": "40ms" }}>
+            <span className="intro-mask-in">Kopi berkualitas,</span>
+          </span>
+          <span className="intro-mask" style={{ "--intro-delay": "150ms" }}>
+            <span className="intro-mask-in">di-roast setiap hari.</span>
+          </span>
         </h1>
 
         <div className="mt-8 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between">
-          <p className="max-w-md text-[0.95rem] leading-relaxed text-cream-2 md:text-base">
-            Biji single origin berasal dari kebun yang kami kenal. Kami
-            me-roast dalam batch kecil setiap minggu, menggiling biji saat
-            pesanan masuk, dan menyajikan minuman dalam waktu tiga menit.
+          <p
+            className="intro-mask max-w-md text-[0.95rem] leading-relaxed text-cream-2 md:text-base"
+            style={{ "--intro-delay": "280ms" }}
+          >
+            <span className="intro-mask-in">
+              Biji single origin berasal dari kebun yang kami kenal. Kami
+              me-roast dalam batch kecil setiap minggu, menggiling biji saat
+              pesanan masuk, dan menyajikan minuman dalam waktu tiga menit.
+            </span>
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/menu"
-              className="btn border border-cream bg-cream text-espresso hover:bg-amber-lt hover:border-amber-lt"
-            >
-              Lihat menu
-            </Link>
-            <Link
-              href="/contact"
-              className="btn border border-cream/40 text-cream hover:border-cream hover:bg-cream/10"
-            >
-              Reservasi
-            </Link>
+            <span className="intro-mask" style={{ "--intro-delay": "380ms" }}>
+              <span className="intro-mask-in">
+                <Link
+                  href="/menu"
+                  className="btn border border-cream bg-cream text-espresso hover:bg-amber-lt hover:border-amber-lt"
+                >
+                  Lihat menu
+                </Link>
+              </span>
+            </span>
+            <span className="intro-mask" style={{ "--intro-delay": "450ms" }}>
+              <span className="intro-mask-in">
+                <Link
+                  href="/contact"
+                  className="btn border border-cream/40 text-cream hover:border-cream hover:bg-cream/10"
+                >
+                  Reservasi
+                </Link>
+              </span>
+            </span>
           </div>
-        </div>
-
-        {/* Scroll hint */}
-        <div className="mt-12 flex items-center gap-2 text-xs font-medium tracking-wide text-cream-2/70 md:mt-16">
-          <span className="inline-block h-8 w-px bg-amber-lt/60" />
-          Gulir untuk melihat lebih lanjut
         </div>
       </div>
     </section>

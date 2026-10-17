@@ -55,12 +55,18 @@ export default function RootLayout({ children }) {
       <head>
         {/*
           Set flag `js` SEBELUM paint pertama.
-          CSS scroll-reveal hanya menyembunyikan elemen kalau flag ini ada,
-          jadi kalau JS gagal → konten tetap tampil normal (fail-safe).
+          Konten yang dianimasikan (navbar, hero, blok reveal) hanya
+          disembunyikan kalau flag ini ada, jadi kalau JS gagal →
+          halaman tetap tampil normal (fail-safe).
+
+          Failsafe: kalau IntroScreen gagal hydrate atau video tidak
+          pernah jalan, class `intro-done` tetap dipasang agar konten
+          tidak terkunci di opacity 0. Event-nya ikut dispatched supaya
+          observer reveal yang sudah terpasang ikut memicu.
         */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add('js')`,
+            __html: `document.documentElement.classList.add('js');setTimeout(function(){var d=document.documentElement;if(!d.classList.contains('intro-done')){d.classList.add('intro-done');window.dispatchEvent(new Event('intro:done'));}},9000)`,
           }}
         />
       </head>

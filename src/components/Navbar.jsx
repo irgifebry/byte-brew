@@ -48,13 +48,16 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        className={`intro-enter-down fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           scrolled
             ? "border-b border-line bg-paper/85 backdrop-blur-md"
             : onDark
               ? "border-b border-transparent"
               : "border-b border-transparent"
         }`}
+        // Turun sedikit + fade in, bareng video intro menghilang.
+        // Tanpa ini navbar cuma "muncul" begitu overlay hilang.
+        style={{ "--intro-delay": "0ms" }}
       >
         <nav className="mx-auto flex max-w-[1240px] items-center justify-between px-5 py-4 md:px-8">
           {/* Logo */}
@@ -75,8 +78,12 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop links */}
-          <ul className="hidden items-center gap-1 md:flex">
+          {/* Desktop links — masuk sedikit setelah header, jadi baris
+              navigasi terasa berjenjang, bukan menempel di logo. */}
+          <ul
+            className="intro-enter hidden items-center gap-1 md:flex"
+            style={{ "--intro-delay": "110ms" }}
+          >
             {LINKS.map((l) => (
               <li key={l.href}>
                 <Link

@@ -72,8 +72,14 @@ body {
   overflow: hidden;
   background: var(--color-espresso);
   opacity: 1;
-  animation: intro-screen-in 700ms ease both;
-  transition: opacity 900ms ease;
+  /* Dissolve video → UI.
+     Easing-nya simetris, BUKAN expo seperti gerakan teks: expo-out
+     menyelesaikan 66% fade dalam ~6ms pertama, jadi videonya terlihat
+     "pop" dengan ekor tipis 700ms. Ease-in-out membuat dissolve
+     berlangsung penuh selama 760ms, paralel dengan teks yang sedang
+     naik → satu gerakan yang gampang dibaca. */
+  transition: opacity 760ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
 }
 .intro-screen-leaving {
   opacity: 0;
@@ -83,11 +89,12 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Video fullscreen = lapisan besar; hint ini mencegah browser
+     melakukan repaint tiap frame di main thread. */
+  will-change: transform;
+  transform: translateZ(0);
 }
-@keyframes intro-screen-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+
 ::selection {
   background-color: var(--color-espresso);
   color: var(--color-cream);
@@ -335,13 +342,24 @@ body {
 /* ============================================================
    Scroll reveal
    ------------------------------------------------------------
-   State "hidden" hanya aktif kalau `html.js` sudah ada, dan class
-   itu hanya di-set oleh script inline di <head>. Kalau JS gagal load,
-   konten tetap terlihat normal (fail-safe).
+   Elemen disembunyikan sejak paint pertama (`html.js` di-set oleh
+   script inline di <head>), BUKAN setelah intro selesai. Kalau
+   disembunyikan belakangan, konten sempat tampil → lalu "tik" hilang
+   → lalu muncul lagi: flash satu-dua frame tepat di pergantian yang
+   paling terasa.
+
+   Geraknya hanya opacity + transform, jadi dijalankan compositor.
+   Kalau JS gagal load, `html.js` tidak ada dan konten tetap
+   terlihat normal (fail-safe).
    ============================================================ */
 
-html.intro-done.js [data-reveal]:not([data-reveal-nested]) {
+html.js [data-reveal]:not([data-reveal-nested]),
+html.js .intro-enter,
+html.js .intro-enter-down {
   opacity: 0;
+}
+
+html.intro-done.js [data-reveal]:not([data-reveal-nested]) {
   --reveal-x: 0px;
   --reveal-y: 28px;
 }
@@ -362,14 +380,119 @@ html.intro-done.js [data-reveal].is-visible:not([data-reveal-nested]) {
   animation: reveal-slide-up 780ms var(--ease-out-expo) both;
   animation-delay: var(--reveal-delay, 0ms);
 }
+
+/* Blok yang masuk tepat saat video intro menghilang (navbar + label
+   kecil di hero). Tidak pakai IntersectionObserver: keduanya sudah
+   pasti di layar, jadi cukup digate `intro-done`.
+
+   Var --reveal-x/y WAJIB ditulis di sini: keyframe-nya membacanya,
+   dan tanpa ini gerakannya hanya fade tanpa geser. */
+html.intro-done.js .intro-enter {
+  opacity: 1;
+  --reveal-x: 0px;
+  --reveal-y: 26px;
+  animation: reveal-slide-up 760ms var(--ease-out-expo) both;
+  animation-delay: var(--intro-delay, 0ms);
+}
+html.intro-done.js .intro-enter-down {
+  opacity: 1;
+  animation: reveal-slide-down 760ms var(--ease-out-expo) both;
+  animation-delay: var(--intro-delay, 0ms);
+}
+
 @keyframes reveal-slide-up {
   from {
     opacity: 0;
-    transform: translate3d(var(--reveal-x), var(--reveal-y), 0);
+    transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 0px), 0);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes reveal-slide-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================================================
+   Intro → UI: masked line reveal
+   ------------------------------------------------------------
+   Untuk teks hero, tiap baris naik dari balik tepi mask
+   (overflow:hidden) alih-alih sekadar fade + geser. Hasilnya teks
+   terasa naik dari cetakan — dan karena hanya menyentuh transform,
+   animasinya tetap berjalan di compositor.
+
+   Padding bawah + margin bawah saling meniadakan: descender (p di
+   "Kopi", koma, g) dapat ruang di dalam mask tanpa menggeser layout.
+   Translate 130% (bukan 100%) supaya elemen benar-benar keluar dari
+   mask, termasuk pada baris pendek seperti tombol pill.
+   ============================================================ */
+
+.intro-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+}
+.intro-mask-in {
+  display: block;
+  will-change: transform;
+}
+html.js .intro-mask-in {
+  transform: translate3d(0, 130%, 0);
+}
+html.intro-done.js .intro-mask-in {
+  animation: intro-mask-rise 780ms var(--ease-out-expo) both;
+  animation-delay: var(--intro-delay, 0ms);
+}
+@keyframes intro-mask-rise {
+  from {
+    transform: translate3d(0, 130%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Garis pemindai yang "menggambar" dirinya sendiri (scroll hint) */
+html.js .intro-rule {
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+html.intro-done.js .intro-rule {
+  animation: intro-rule-draw 620ms var(--ease-out-expo) both;
+  animation-delay: var(--intro-delay, 0ms);
+}
+@keyframes intro-rule-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Video hero "menapak" ke tempatnya: zoom pelan dari 1.07 ke 1.
+   Dimulai saat overlay masih 100% opaque (kelas `intro-rolling`),
+   jadi zoom terjadi DI BALIK dissolve dan tidak pernah terlihat
+   sebagai lompatan. Kalau intro gagal, kelas tidak pernah di-set dan
+   video diam di scale 1 — tidak ada kondisi tersangkut. */
+html.intro-rolling.js .hero-video {
+  animation: hero-settle 2600ms var(--ease-out-expo) both;
+}
+@keyframes hero-settle {
+  from {
+    transform: scale(1.07);
+  }
+  to {
+    transform: scale(1);
   }
 }
 
